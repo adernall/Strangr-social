@@ -1,65 +1,218 @@
-import Image from "next/image";
+// app/page.js
+'use client'
 
-export default function Home() {
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import dynamic from 'next/dynamic'
+import { supabase } from '../lib/supabase'
+import { useAuth } from '../lib/AuthContext'
+import styles from './page.module.css'
+
+const ParticlesBg = dynamic(() => import('../components/ParticlesBg'), {
+  ssr: false,
+})
+
+export default function HomePage() {
+  const { user } = useAuth()
+  const router = useRouter()
+
+  const [showAuth, setShowAuth] = useState(null) // 'login' | 'signup' | 'reset'
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirm, setConfirm] = useState('')
+  const [error, setError] = useState('')
+  const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  function resetForm() {
+    setEmail('')
+    setPassword('')
+    setConfirm('')
+    setError('')
+    setMessage('')
+  }
+
+  function openModal(type) {
+    resetForm()
+    setShowAuth(type)
+  }
+
+  async function handleLogin() {
+    setError('')
+    setLoading(true)
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    setLoading(false)
+    if (error) return setError(error.message)
+    setShowAuth(null)
+    resetForm()
+  }
+
+  async function handleSignup() {
+    setError('')
+    if (password !== confirm) return setError('Passwords do not match.')
+    if (password.length < 6) return setError('Password must be at least 6 characters.')
+    setLoading(true)
+    const { error } = await supabase.auth.signUp({ email, password })
+    setLoading(false)
+    if (error) return setError(error.message)
+    setMessage('Check your email to confirm your account.')
+  }
+
+  async function handleReset() {
+    setError('')
+    setLoading(true)
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    })
+    setLoading(false)
+    if (error) return setError(error.message)
+    setMessage('Reset link sent — check your email.')
+  }
+
+  async function handleLogout() {
+    await supabase.auth.signOut()
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className={styles.main}>
+      <ParticlesBg />
+      <div className={styles.blob1} />
+      <div className={styles.blob2} />
+
+      {/* Nav */}
+      <nav className={styles.nav}>
+        <span className={styles.logo}>strangr</span>
+        <div className={styles.navLinks}>
+          {user ? (
+            <>
+              <span className={styles.userEmail}>{user.email}</span>
+              <button className={styles.navBtn} onClick={handleLogout}>
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <button className={styles.navBtn} onClick={() => openModal('login')}>
+                Log in
+              </button>
+              <button className={styles.signupBtn} onClick={() => openModal('signup')}>
+                Sign up
+              </button>
+            </>
+          )}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </nav>
+
+      {/* Hero */}
+      <section className={styles.hero}>
+        <p className={styles.eyebrow}>anonymous · real-time · free</p>
+        <h1 className={styles.headline}>
+          Talk to a<br />
+          <span className={styles.accent}>stranger.</span>
+        </h1>
+        <p className={styles.sub}>
+          No account needed. Just click and connect<br />with someone new, anywhere in the world.
+        </p>
+        <div className={styles.actions}>
+          <button className={styles.primaryBtn} onClick={() => router.push('/chat')}>
+            Start chatting →
+          </button>
+          {!user && (
+            <button className={styles.ghostBtn} onClick={() => openModal('signup')}>
+              Create account
+            </button>
+          )}
         </div>
-      </main>
-    </div>
-  );
+      </section>
+
+      {/* Auth Modal */}
+      {showAuth && (
+        <div className={styles.overlay} onClick={() => setShowAuth(null)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <button className={styles.close} onClick={() => setShowAuth(null)}>✕</button>
+
+            {/* LOGIN */}
+            {showAuth === 'login' && (
+              <>
+                <h2 className={styles.modalTitle}>Welcome back</h2>
+                <p className={styles.modalSub}>Log in to your account</p>
+                <div className={styles.form}>
+                  <input className={styles.input} type="email" placeholder="Email"
+                    value={email} onChange={(e) => setEmail(e.target.value)} />
+                  <input className={styles.input} type="password" placeholder="Password"
+                    value={password} onChange={(e) => setPassword(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleLogin()} />
+                  {error && <p className={styles.errorMsg}>{error}</p>}
+                  <button className={styles.submitBtn} onClick={handleLogin} disabled={loading}>
+                    {loading ? 'Logging in…' : 'Log in'}
+                  </button>
+                  <p className={styles.forgot} onClick={() => openModal('reset')}>
+                    Forgot password?
+                  </p>
+                </div>
+                <p className={styles.toggle}>
+                  No account?{' '}
+                  <span onClick={() => openModal('signup')}>Sign up</span>
+                </p>
+              </>
+            )}
+
+            {/* SIGNUP */}
+            {showAuth === 'signup' && (
+              <>
+                <h2 className={styles.modalTitle}>Join Strangr</h2>
+                <p className={styles.modalSub}>Create a free account</p>
+                {message ? (
+                  <p className={styles.successMsg}>{message}</p>
+                ) : (
+                  <div className={styles.form}>
+                    <input className={styles.input} type="email" placeholder="Email"
+                      value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <input className={styles.input} type="password" placeholder="Password"
+                      value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <input className={styles.input} type="password" placeholder="Confirm password"
+                      value={confirm} onChange={(e) => setConfirm(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleSignup()} />
+                    {error && <p className={styles.errorMsg}>{error}</p>}
+                    <button className={styles.submitBtn} onClick={handleSignup} disabled={loading}>
+                      {loading ? 'Creating account…' : 'Create account'}
+                    </button>
+                  </div>
+                )}
+                <p className={styles.toggle}>
+                  Already have one?{' '}
+                  <span onClick={() => openModal('login')}>Log in</span>
+                </p>
+              </>
+            )}
+
+            {/* RESET PASSWORD */}
+            {showAuth === 'reset' && (
+              <>
+                <h2 className={styles.modalTitle}>Reset password</h2>
+                <p className={styles.modalSub}>We'll send you a reset link</p>
+                {message ? (
+                  <p className={styles.successMsg}>{message}</p>
+                ) : (
+                  <div className={styles.form}>
+                    <input className={styles.input} type="email" placeholder="Email"
+                      value={email} onChange={(e) => setEmail(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleReset()} />
+                    {error && <p className={styles.errorMsg}>{error}</p>}
+                    <button className={styles.submitBtn} onClick={handleReset} disabled={loading}>
+                      {loading ? 'Sending…' : 'Send reset link'}
+                    </button>
+                  </div>
+                )}
+                <p className={styles.toggle}>
+                  Back to{' '}
+                  <span onClick={() => openModal('login')}>Log in</span>
+                </p>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </main>
+  )
 }

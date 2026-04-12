@@ -1,0 +1,88 @@
+/* app/reset-password/reset.module.css */
+.page {
+  min-height: 100vh;
+  background: #080810;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-outfit), sans-serif;
+  padding: 1rem;
+}
+
+.card {
+  background: #0f0f1a;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #f0f0f5;
+  margin-bottom: 0.35rem;
+}
+
+.sub {
+  font-size: 14px;
+  color: rgba(240,240,245,0.4);
+  margin-bottom: 1.75rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.input {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 9px;
+  padding: 0.75rem 1rem;
+  font-size: 14px;
+  color: #f0f0f5;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input::placeholder { color: rgba(240,240,245,0.3); }
+.input:focus { border-color: rgba(108,99,255,0.5); }
+
+.btn {
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  background: #6c63ff;
+  padding: 0.75rem;
+  border-radius: 9px;
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  margin-top: 0.25rem;
+  transition: opacity 0.2s;
+}
+
+.btn:hover:not(:disabled) { opacity: 0.85; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.error {
+  font-size: 13px;
+  color: #ff6b6b;
+  background: rgba(255,107,107,0.08);
+  border: 1px solid rgba(255,107,107,0.2);
+  border-radius: 8px;
+  padding: 0.6rem 0.875rem;
+}
+
+.success {
+  font-size: 14px;
+  color: rgba(50,210,120,0.9);
+  background: rgba(50,210,120,0.08);
+  border: 1px solid rgba(50,210,120,0.2);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+}

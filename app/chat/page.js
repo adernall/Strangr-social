@@ -39,39 +39,44 @@ export default function ChatPage() {
   }, [messages])
 
   async function startMatching() {
-    const sid = sessionId.current
+  const sid = sessionId.current
 
-    // Look for a room that is waiting and wasn't created by us
-    const { data: waitingRooms } = await supabase
+  // Clean up any old waiting rooms created by us
+  await supabase
+    .from('chat_rooms')
+    .delete()
+    .eq('participant_1', sid)
+    .eq('status', 'waiting')
+
+  // Look for someone else waiting
+  const { data: waitingRooms } = await supabase
+    .from('chat_rooms')
+    .select('*')
+    .eq('status', 'waiting')
+    .neq('participant_1', sid)
+    .limit(1)
+
+  if (waitingRooms && waitingRooms.length > 0) {
+    const room = waitingRooms[0]
+    await supabase
       .from('chat_rooms')
-      .select('*')
-      .eq('status', 'waiting')
-      .neq('participant_1', sid)
-      .limit(1)
+      .update({ participant_2: sid, status: 'active' })
+      .eq('id', room.id)
 
-    if (waitingRooms && waitingRooms.length > 0) {
-      // Join existing room as participant_2
-      const room = waitingRooms[0]
-      await supabase
-        .from('chat_rooms')
-        .update({ participant_2: sid, status: 'active' })
-        .eq('id', room.id)
+    setRoomId(room.id)
+    setStatus('chatting')
+    subscribeToMessages(room.id)
+  } else {
+    const { data: newRoom } = await supabase
+      .from('chat_rooms')
+      .insert({ participant_1: sid, status: 'waiting' })
+      .select()
+      .single()
 
-      setRoomId(room.id)
-      setStatus('chatting')
-      subscribeToMessages(room.id)
-    } else {
-      // Create a new waiting room
-      const { data: newRoom } = await supabase
-        .from('chat_rooms')
-        .insert({ participant_1: sid, status: 'waiting' })
-        .select()
-        .single()
-
-      setRoomId(newRoom.id)
-      subscribeToRoomStatus(newRoom.id)
-    }
+    setRoomId(newRoom.id)
+    subscribeToRoomStatus(newRoom.id)
   }
+}
 
   function subscribeToRoomStatus(rid) {
     roomChannel.current = supabase
@@ -93,29 +98,44 @@ export default function ChatPage() {
   }
 
   function subscribeToMessages(rid) {
-    msgChannel.current = supabase
-      .channel(`messages-${rid}`)
-      .on(
-        'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `room_id=eq.${rid}` },
-        (payload) => {
+  msgChannel.current = supabase
+    .channel(`messages-${rid}`)
+    .on(
+      'postgres_changes',
+      { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `room_id=eq.${rid}` },
+      (payload) => {
+        // Only add if it's from the OTHER person
+        if (payload.new.sender_session !== sessionId.current) {
           setMessages((prev) => [...prev, payload.new])
         }
-      )
-      .subscribe()
-  }
+      }
+    )
+    .subscribe()
+}
 
   async function sendMessage() {
-    const text = input.trim()
-    if (!text || !roomId) return
-    setInput('')
+  const text = input.trim()
+  if (!text || !roomId) return
+  setInput('')
 
-    await supabase.from('chat_messages').insert({
-      room_id: roomId,
-      sender_session: sessionId.current,
-      content: text,
-    })
+  const newMsg = {
+    id: crypto.randomUUID(),
+    room_id: roomId,
+    sender_session: sessionId.current,
+    content: text,
+    created_at: new Date().toISOString(),
   }
+
+  // Show immediately for sender
+  setMessages((prev) => [...prev, newMsg])
+
+  // Save to database for the other person
+  await supabase.from('chat_messages').insert({
+    room_id: roomId,
+    sender_session: sessionId.current,
+    content: text,
+  })
+}
 
   async function handleSkip() {
     if (roomId) {

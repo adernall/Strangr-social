@@ -1,0 +1,149 @@
+/* app/how-it-works/hiw.module.css */
+.page {
+  min-height: 100vh;
+  background: #080810;
+  color: #f0f0f5;
+  font-family: var(--font-outfit), sans-serif;
+}
+
+.main {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 0 1.5rem 6rem;
+}
+
+.hero {
+  padding: 5rem 0 4rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  margin-bottom: 4rem;
+}
+
+.tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6c63ff;
+  background: rgba(108,99,255,0.1);
+  border: 1px solid rgba(108,99,255,0.2);
+  padding: 4px 12px;
+  border-radius: 100px;
+  margin-bottom: 1.5rem;
+}
+
+.headline {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.25rem;
+}
+
+.sub {
+  font-size: 1rem;
+  color: rgba(240,240,245,0.5);
+  line-height: 1.75;
+  max-width: 500px;
+}
+
+.modeSection { margin-bottom: 3rem; }
+
+.modeHeader { margin-bottom: 2rem; }
+
+.modeBadge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 100px;
+  margin-bottom: 1rem;
+}
+
+.modeBadge[data-type="anon"] {
+  background: rgba(255,180,50,0.1);
+  color: rgba(255,180,50,0.85);
+  border: 1px solid rgba(255,180,50,0.2);
+}
+
+.modeBadge[data-type="account"] {
+  background: rgba(50,210,120,0.1);
+  color: rgba(50,210,120,0.85);
+  border: 1px solid rgba(50,210,120,0.2);
+}
+
+.modeTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.modeSub {
+  font-size: 14px;
+  color: rgba(240,240,245,0.45);
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.step {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.step:last-child { border-bottom: none; }
+
+.stepNum {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(108,99,255,0.6);
+  letter-spacing: 0.05em;
+  min-width: 28px;
+  padding-top: 2px;
+}
+
+.stepTitle {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.stepDesc {
+  font-size: 13.5px;
+  color: rgba(240,240,245,0.5);
+  line-height: 1.7;
+}
+
+.divider {
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  margin: 3rem 0;
+}
+
+.privacyBox {
+  background: rgba(108,99,255,0.05);
+  border: 1px solid rgba(108,99,255,0.15);
+  border-radius: 14px;
+  padding: 1.75rem 2rem;
+}
+
+.privacyTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.privacyText {
+  font-size: 14px;
+  color: rgba(240,240,245,0.5);
+  line-height: 1.8;
+}

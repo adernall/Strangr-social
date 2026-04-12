@@ -6,6 +6,10 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../lib/AuthContext'
 import styles from './dashboard.module.css'
+import Navbar from '../../components/Navbar'
+
+// inside return(), replace the <header>...</header> with:
+<Navbar />
 
 export default function Dashboard() {
   const { user, loading: authLoading } = useAuth()

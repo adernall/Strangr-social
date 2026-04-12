@@ -1,22 +1,22 @@
 // app/page.js
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/AuthContext'
+import Navbar from '../components/Navbar'
 import styles from './page.module.css'
 
-const ParticlesBg = dynamic(() => import('../components/ParticlesBg'), {
-  ssr: false,
-})
+const ParticlesBg = dynamic(() => import('../components/ParticlesBg'), { ssr: false })
 
 export default function HomePage() {
   const { user } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
 
-  const [showAuth, setShowAuth] = useState(null) // 'login' | 'signup' | 'reset'
+  const [showAuth, setShowAuth] = useState(null)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
@@ -24,53 +24,41 @@ export default function HomePage() {
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
 
+  useEffect(() => {
+    const auth = searchParams.get('auth')
+    if (auth === 'login') setShowAuth('login')
+    if (auth === 'signup') setShowAuth('signup')
+  }, [searchParams])
+
   function resetForm() {
-    setEmail('')
-    setPassword('')
-    setConfirm('')
-    setError('')
-    setMessage('')
+    setEmail(''); setPassword(''); setConfirm(''); setError(''); setMessage('')
   }
 
-  function openModal(type) {
-    resetForm()
-    setShowAuth(type)
-  }
+  function openModal(type) { resetForm(); setShowAuth(type) }
 
   async function handleLogin() {
-  setError('')
-  setLoading(true)
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-  setLoading(false)
-  if (error) return setError(error.message)
-
-  // Check if profile exists
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('id')
-    .eq('id', data.user.id)
-    .single()
-
-  setShowAuth(null)
-  resetForm()
-
-  if (!profile) {
-    router.push('/setup-profile')
-  } else {
-    router.push('/dashboard')
+    setError('')
+    setLoading(true)
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    setLoading(false)
+    if (error) return setError(error.message)
+    const { data: profile } = await supabase
+      .from('profiles').select('id').eq('id', data.user.id).single()
+    setShowAuth(null)
+    resetForm()
+    router.push(profile ? '/dashboard' : '/setup-profile')
   }
-}
 
   async function handleSignup() {
-  setError('')
-  if (password !== confirm) return setError('Passwords do not match.')
-  if (password.length < 6) return setError('Password must be at least 6 characters.')
-  setLoading(true)
-  const { error } = await supabase.auth.signUp({ email, password })
-  setLoading(false)
-  if (error) return setError(error.message)
-  setMessage('Check your email to confirm your account, then log in.')
-}
+    setError('')
+    if (password !== confirm) return setError('Passwords do not match.')
+    if (password.length < 6) return setError('Password must be at least 6 characters.')
+    setLoading(true)
+    const { error } = await supabase.auth.signUp({ email, password })
+    setLoading(false)
+    if (error) return setError(error.message)
+    setMessage('Check your email to confirm your account, then log in.')
+  }
 
   async function handleReset() {
     setError('')
@@ -83,41 +71,14 @@ export default function HomePage() {
     setMessage('Reset link sent — check your email.')
   }
 
-  async function handleLogout() {
-    await supabase.auth.signOut()
-  }
-
   return (
     <main className={styles.main}>
       <ParticlesBg />
       <div className={styles.blob1} />
       <div className={styles.blob2} />
 
-      {/* Nav */}
-      <nav className={styles.nav}>
-        <span className={styles.logo}>strangr</span>
-        <div className={styles.navLinks}>
-          {user ? (
-            <>
-              <span className={styles.userEmail}>{user.email}</span>
-              <button className={styles.navBtn} onClick={handleLogout}>
-                Log out
-              </button>
-            </>
-          ) : (
-            <>
-              <button className={styles.navBtn} onClick={() => openModal('login')}>
-                Log in
-              </button>
-              <button className={styles.signupBtn} onClick={() => openModal('signup')}>
-                Sign up
-              </button>
-            </>
-          )}
-        </div>
-      </nav>
+      <Navbar />
 
-      {/* Hero */}
       <section className={styles.hero}>
         <p className={styles.eyebrow}>anonymous · real-time · free</p>
         <h1 className={styles.headline}>
@@ -141,11 +102,10 @@ export default function HomePage() {
 
       {/* Auth Modal */}
       {showAuth && (
-        <div className={styles.overlay} onClick={() => setShowAuth(null)}>
+        <div className={styles.overlay} onClick={() => { setShowAuth(null); router.replace('/') }}>
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <button className={styles.close} onClick={() => setShowAuth(null)}>✕</button>
+            <button className={styles.close} onClick={() => { setShowAuth(null); router.replace('/') }}>✕</button>
 
-            {/* LOGIN */}
             {showAuth === 'login' && (
               <>
                 <h2 className={styles.modalTitle}>Welcome back</h2>
@@ -160,25 +120,17 @@ export default function HomePage() {
                   <button className={styles.submitBtn} onClick={handleLogin} disabled={loading}>
                     {loading ? 'Logging in…' : 'Log in'}
                   </button>
-                  <p className={styles.forgot} onClick={() => openModal('reset')}>
-                    Forgot password?
-                  </p>
+                  <p className={styles.forgot} onClick={() => openModal('reset')}>Forgot password?</p>
                 </div>
-                <p className={styles.toggle}>
-                  No account?{' '}
-                  <span onClick={() => openModal('signup')}>Sign up</span>
-                </p>
+                <p className={styles.toggle}>No account? <span onClick={() => openModal('signup')}>Sign up</span></p>
               </>
             )}
 
-            {/* SIGNUP */}
             {showAuth === 'signup' && (
               <>
                 <h2 className={styles.modalTitle}>Join Strangr</h2>
                 <p className={styles.modalSub}>Create a free account</p>
-                {message ? (
-                  <p className={styles.successMsg}>{message}</p>
-                ) : (
+                {message ? <p className={styles.successMsg}>{message}</p> : (
                   <div className={styles.form}>
                     <input className={styles.input} type="email" placeholder="Email"
                       value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -193,21 +145,15 @@ export default function HomePage() {
                     </button>
                   </div>
                 )}
-                <p className={styles.toggle}>
-                  Already have one?{' '}
-                  <span onClick={() => openModal('login')}>Log in</span>
-                </p>
+                <p className={styles.toggle}>Already have one? <span onClick={() => openModal('login')}>Log in</span></p>
               </>
             )}
 
-            {/* RESET PASSWORD */}
             {showAuth === 'reset' && (
               <>
                 <h2 className={styles.modalTitle}>Reset password</h2>
                 <p className={styles.modalSub}>We'll send you a reset link</p>
-                {message ? (
-                  <p className={styles.successMsg}>{message}</p>
-                ) : (
+                {message ? <p className={styles.successMsg}>{message}</p> : (
                   <div className={styles.form}>
                     <input className={styles.input} type="email" placeholder="Email"
                       value={email} onChange={(e) => setEmail(e.target.value)}
@@ -218,10 +164,7 @@ export default function HomePage() {
                     </button>
                   </div>
                 )}
-                <p className={styles.toggle}>
-                  Back to{' '}
-                  <span onClick={() => openModal('login')}>Log in</span>
-                </p>
+                <p className={styles.toggle}>Back to <span onClick={() => openModal('login')}>Log in</span></p>
               </>
             )}
           </div>

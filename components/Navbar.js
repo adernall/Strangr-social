@@ -19,7 +19,6 @@ export default function Navbar() {
   const moreRef = useRef()
   const searchRef = useRef()
 
-  // Close dropdowns on outside click
   useEffect(() => {
     function handleClick(e) {
       if (moreRef.current && !moreRef.current.contains(e.target)) setMoreOpen(false)
@@ -58,10 +57,8 @@ export default function Navbar() {
 
   return (
     <nav className={styles.nav}>
-      {/* Logo */}
       <span className={styles.logo} onClick={() => router.push('/')}>strangr</span>
 
-      {/* Center links */}
       <div className={styles.centerLinks}>
         <span
           className={`${styles.link} ${isActive('/about') ? styles.activeLink : ''}`}
@@ -82,16 +79,15 @@ export default function Navbar() {
           Support
         </span>
 
-        {/* More dropdown */}
-        <div className={styles.dropItem} onClick={() => { router.push('/friends'); setMoreOpen(false) }}>
-  Friends
-</div>
         <div className={styles.moreWrap} ref={moreRef}>
           <span className={styles.link} onClick={() => setMoreOpen(!moreOpen)}>
             More {moreOpen ? '↑' : '↓'}
           </span>
           {moreOpen && (
             <div className={styles.dropdown}>
+              <div className={styles.dropItem} onClick={() => { router.push('/friends'); setMoreOpen(false) }}>
+                Friends
+              </div>
               <div className={styles.dropItem} onClick={() => { router.push('/about#team'); setMoreOpen(false) }}>
                 Our Team
               </div>
@@ -110,10 +106,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Right icons */}
       <div className={styles.rightIcons}>
-
-        {/* Search */}
         <div className={styles.searchWrap} ref={searchRef}>
           <button
             className={styles.iconBtn}
@@ -126,12 +119,12 @@ export default function Navbar() {
             <div className={styles.searchDropdown}>
               <input
                 className={styles.searchInput}
-                placeholder="Search by username…"
+                placeholder="Search by username..."
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
                 autoFocus
               />
-              {searching && <p className={styles.searchHint}>Searching…</p>}
+              {searching && <p className={styles.searchHint}>Searching...</p>}
               {!searching && searchQuery && searchResults.length === 0 && (
                 <p className={styles.searchHint}>No users found.</p>
               )}
@@ -158,21 +151,14 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Inbox — auth gated */}
         <button
           className={styles.iconBtn}
           onClick={() => requireAuth('/inbox')}
           title="Inbox"
         >
-        <button
-  className={styles.iconBtn}
-  onClick={() => requireAuth('/friends')}
-  title="Friends"
->
-  <InboxIcon />
-</button>
+          <InboxIcon />
+        </button>
 
-        {/* Profile or login */}
         {user ? (
           <button
             className={styles.iconBtn}

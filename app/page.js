@@ -1,7 +1,7 @@
 // app/page.js
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { supabase } from '../lib/supabase'
@@ -171,5 +171,17 @@ export default function HomePage() {
         </div>
       )}
     </main>
+  )
+}
+function HomePageInner() {
+  // ... your entire existing HomePage function content goes here
+  // rename HomePage to HomePageInner
+}
+
+export default function HomePage() {
+  return (
+    <Suspense fallback={null}>
+      <HomePageInner />
+    </Suspense>
   )
 }

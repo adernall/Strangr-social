@@ -83,6 +83,9 @@ export default function Navbar() {
         </span>
 
         {/* More dropdown */}
+        <div className={styles.dropItem} onClick={() => { router.push('/friends'); setMoreOpen(false) }}>
+  Friends
+</div>
         <div className={styles.moreWrap} ref={moreRef}>
           <span className={styles.link} onClick={() => setMoreOpen(!moreOpen)}>
             More {moreOpen ? '↑' : '↓'}
@@ -161,8 +164,13 @@ export default function Navbar() {
           onClick={() => requireAuth('/inbox')}
           title="Inbox"
         >
-          <InboxIcon />
-        </button>
+        <button
+  className={styles.iconBtn}
+  onClick={() => requireAuth('/friends')}
+  title="Friends"
+>
+  <InboxIcon />
+</button>
 
         {/* Profile or login */}
         {user ? (

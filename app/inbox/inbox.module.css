@@ -1,0 +1,121 @@
+/* app/inbox/inbox.module.css */
+.page {
+  min-height: 100vh;
+  background: #080810;
+  color: #f0f0f5;
+  font-family: var(--font-outfit), sans-serif;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid rgba(108,99,255,0.2);
+  border-top-color: #6c63ff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.main {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 6rem;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.empty {
+  text-align: center;
+  padding: 4rem 0;
+  color: rgba(240,240,245,0.3);
+  font-size: 15px;
+}
+
+.emptyHint {
+  font-size: 13px;
+  margin-top: 0.5rem;
+  color: rgba(240,240,245,0.2);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.convRow {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.875rem 1rem;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.convRow:hover { background: rgba(255,255,255,0.05); }
+
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(108,99,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: #6c63ff;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.convInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.convUsername {
+  font-size: 14px;
+  font-weight: 500;
+  color: #f0f0f5;
+  margin-bottom: 2px;
+}
+
+.convLast {
+  font-size: 13px;
+  color: rgba(240,240,245,0.35);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.convTime {
+  font-size: 11px;
+  color: rgba(240,240,245,0.25);
+  flex-shrink: 0;
+}

@@ -18,10 +18,16 @@
 html, body {
   background: var(--bg);
   color: var(--text-primary);
-  font-family: var(--font-outfit), sans-serif;
+  font-family: var(--font-outfit), -apple-system, sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
+  /* Prevent font size inflation on mobile */
+  -webkit-text-size-adjust: 100%;
 }
 
 a { color: inherit; text-decoration: none; }
 button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+/* Prevent horizontal scroll on mobile */
+* { max-width: 100%; }
+img { max-width: 100%; height: auto; }

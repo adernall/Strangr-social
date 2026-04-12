@@ -55,9 +55,7 @@
   text-align: center;
 }
 
-.avatarWrap {
-  margin-bottom: 0.5rem;
-}
+.avatarWrap { margin-bottom: 0.5rem; }
 
 .avatar {
   width: 100px;
@@ -81,11 +79,7 @@
   color: #6c63ff;
 }
 
-.username {
-  font-size: 1.35rem;
-  font-weight: 600;
-  color: #f0f0f5;
-}
+.username { font-size: 1.35rem; font-weight: 600; color: #f0f0f5; }
 
 .bio {
   font-size: 14px;
@@ -176,10 +170,7 @@
   transition: background 0.2s, color 0.2s;
 }
 
-.msgBtn:hover {
-  background: rgba(255,255,255,0.09);
-  color: #f0f0f5;
-}
+.msgBtn:hover { background: rgba(255,255,255,0.09); color: #f0f0f5; }
 
 .editBtn {
   font-size: 14px;
@@ -195,3 +186,23 @@
 }
 
 .editBtn:hover { background: rgba(255,255,255,0.09); }
+
+/* ─── RESPONSIVE ─────────────────────────────── */
+@media (max-width: 768px) {
+  .main { padding: 2rem 1rem; }
+
+  .card {
+    padding: 2rem 1.25rem;
+    border-radius: 16px;
+  }
+
+  .actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .addBtn, .pendingBtn, .acceptBtn, .friendsBtn, .msgBtn, .editBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}

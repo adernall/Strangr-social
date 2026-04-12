@@ -70,11 +70,7 @@
   gap: 1.5rem;
 }
 
-.avatarSection {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+.avatarSection { display: flex; flex-direction: column; align-items: center; }
 
 .avatarCircle {
   width: 90px;
@@ -90,11 +86,7 @@
   transition: border-color 0.2s;
 }
 
-.avatarImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+.avatarImg { width: 100%; height: 100%; object-fit: cover; }
 
 .avatarInitial {
   font-size: 2rem;
@@ -118,7 +110,6 @@
 
 .avatarCircle:hover .avatarOverlay { opacity: 1; }
 
-/* View mode */
 .viewMode {
   display: flex;
   flex-direction: column;
@@ -128,16 +119,8 @@
   text-align: center;
 }
 
-.usernameDisplay {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #f0f0f5;
-}
-
-.emailDisplay {
-  font-size: 13px;
-  color: rgba(240,240,245,0.35);
-}
+.usernameDisplay { font-size: 1.2rem; font-weight: 600; color: #f0f0f5; }
+.emailDisplay { font-size: 13px; color: rgba(240,240,245,0.35); }
 
 .bioDisplay {
   font-size: 14px;
@@ -147,11 +130,7 @@
   margin-top: 0.25rem;
 }
 
-.savedMsg {
-  font-size: 13px;
-  color: rgba(50,210,120,0.85);
-  margin-top: 0.25rem;
-}
+.savedMsg { font-size: 13px; color: rgba(50,210,120,0.85); margin-top: 0.25rem; }
 
 .editBtn {
   font-size: 13px;
@@ -167,30 +146,13 @@
   transition: background 0.2s, color 0.2s;
 }
 
-.editBtn:hover {
-  background: rgba(255,255,255,0.09);
-  color: #f0f0f5;
-}
+.editBtn:hover { background: rgba(255,255,255,0.09); color: #f0f0f5; }
 
-/* Edit mode */
-.editMode {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  width: 100%;
-}
+.editMode { display: flex; flex-direction: column; gap: 1rem; width: 100%; }
 
-.fieldGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
+.fieldGroup { display: flex; flex-direction: column; gap: 0.4rem; }
 
-.label {
-  font-size: 13px;
-  font-weight: 500;
-  color: rgba(240,240,245,0.5);
-}
+.label { font-size: 13px; font-weight: 500; color: rgba(240,240,245,0.5); }
 
 .input {
   background: rgba(255,255,255,0.05);
@@ -202,6 +164,7 @@
   font-family: inherit;
   outline: none;
   transition: border-color 0.2s;
+  width: 100%;
 }
 
 .textarea {
@@ -215,13 +178,11 @@
   outline: none;
   resize: none;
   transition: border-color 0.2s;
+  width: 100%;
 }
 
-.input::placeholder,
-.textarea::placeholder { color: rgba(240,240,245,0.25); }
-
-.input:focus,
-.textarea:focus { border-color: rgba(108,99,255,0.5); }
+.input::placeholder, .textarea::placeholder { color: rgba(240,240,245,0.25); }
+.input:focus, .textarea:focus { border-color: rgba(108,99,255,0.5); }
 
 .error {
   font-size: 13px;
@@ -232,11 +193,7 @@
   padding: 0.6rem 0.875rem;
 }
 
-.editActions {
-  display: flex;
-  gap: 0.75rem;
-  margin-top: 0.25rem;
-}
+.editActions { display: flex; gap: 0.75rem; margin-top: 0.25rem; }
 
 .cancelBtn {
   flex: 1;
@@ -270,3 +227,10 @@
 
 .saveBtn:hover:not(:disabled) { opacity: 0.85; }
 .saveBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ─── RESPONSIVE ─────────────────────────────── */
+@media (max-width: 768px) {
+  .header { padding: 1rem 1.25rem; }
+  .main { padding: 1.5rem 1rem; }
+  .card { padding: 2rem 1.25rem; border-radius: 16px; }
+}

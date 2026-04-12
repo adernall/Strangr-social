@@ -48,7 +48,6 @@
 }
 
 .modeSection { margin-bottom: 3rem; }
-
 .modeHeader { margin-bottom: 2rem; }
 
 .modeBadge {
@@ -74,23 +73,10 @@
   border: 1px solid rgba(50,210,120,0.2);
 }
 
-.modeTitle {
-  font-size: 1.5rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  margin-bottom: 0.5rem;
-}
+.modeTitle { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+.modeSub { font-size: 14px; color: rgba(240,240,245,0.45); }
 
-.modeSub {
-  font-size: 14px;
-  color: rgba(240,240,245,0.45);
-}
-
-.steps {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
+.steps { display: flex; flex-direction: column; gap: 0; }
 
 .step {
   display: flex;
@@ -111,23 +97,10 @@
   padding-top: 2px;
 }
 
-.stepTitle {
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 0.3rem;
-}
+.stepTitle { font-size: 15px; font-weight: 600; margin-bottom: 0.3rem; }
+.stepDesc { font-size: 13.5px; color: rgba(240,240,245,0.5); line-height: 1.7; }
 
-.stepDesc {
-  font-size: 13.5px;
-  color: rgba(240,240,245,0.5);
-  line-height: 1.7;
-}
-
-.divider {
-  height: 1px;
-  background: rgba(255,255,255,0.06);
-  margin: 3rem 0;
-}
+.divider { height: 1px; background: rgba(255,255,255,0.06); margin: 3rem 0; }
 
 .privacyBox {
   background: rgba(108,99,255,0.05);
@@ -136,14 +109,15 @@
   padding: 1.75rem 2rem;
 }
 
-.privacyTitle {
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-}
+.privacyTitle { font-size: 1rem; font-weight: 600; margin-bottom: 0.75rem; }
+.privacyText { font-size: 14px; color: rgba(240,240,245,0.5); line-height: 1.8; }
 
-.privacyText {
-  font-size: 14px;
-  color: rgba(240,240,245,0.5);
-  line-height: 1.8;
+/* ─── RESPONSIVE ─────────────────────────────── */
+@media (max-width: 768px) {
+  .main { padding: 0 1rem 4rem; }
+  .hero { padding: 3rem 0 2.5rem; margin-bottom: 2.5rem; }
+  .sub { font-size: 0.95rem; }
+  .modeTitle { font-size: 1.25rem; }
+  .divider { margin: 2rem 0; }
+  .privacyBox { padding: 1.25rem; }
 }

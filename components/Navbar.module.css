@@ -20,8 +20,10 @@
   color: #f0f0f5;
   cursor: pointer;
   flex-shrink: 0;
+  z-index: 1;
 }
 
+/* Desktop center links */
 .centerLinks {
   display: flex;
   align-items: center;
@@ -41,20 +43,10 @@
   white-space: nowrap;
 }
 
-.link:hover {
-  color: #f0f0f5;
-  background: rgba(255,255,255,0.05);
-}
+.link:hover { color: #f0f0f5; background: rgba(255,255,255,0.05); }
+.activeLink { color: #f0f0f5; background: rgba(255,255,255,0.06); }
 
-.activeLink {
-  color: #f0f0f5;
-  background: rgba(255,255,255,0.06);
-}
-
-/* More dropdown */
-.moreWrap {
-  position: relative;
-}
+.moreWrap { position: relative; }
 
 .dropdown {
   position: absolute;
@@ -84,10 +76,7 @@
   transition: background 0.15s, color 0.15s;
 }
 
-.dropItem:hover {
-  background: rgba(255,255,255,0.06);
-  color: #f0f0f5;
-}
+.dropItem:hover { background: rgba(255,255,255,0.06); color: #f0f0f5; }
 
 .dropDivider {
   height: 1px;
@@ -95,7 +84,7 @@
   margin: 0.3rem 0.4rem;
 }
 
-/* Right icons */
+/* Desktop right icons */
 .rightIcons {
   display: flex;
   align-items: center;
@@ -118,10 +107,7 @@
   font-family: inherit;
 }
 
-.iconBtn:hover {
-  color: #f0f0f5;
-  background: rgba(255,255,255,0.06);
-}
+.iconBtn:hover { color: #f0f0f5; background: rgba(255,255,255,0.06); }
 
 .loginBtn {
   font-size: 13px;
@@ -136,14 +122,10 @@
   transition: background 0.2s;
 }
 
-.loginBtn:hover {
-  background: rgba(108,99,255,0.35);
-}
+.loginBtn:hover { background: rgba(108,99,255,0.35); }
 
-/* Search dropdown */
-.searchWrap {
-  position: relative;
-}
+/* Search */
+.searchWrap { position: relative; }
 
 .searchDropdown {
   position: absolute;
@@ -213,13 +195,111 @@
   flex-shrink: 0;
 }
 
-.resultAvatarImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.resultAvatarImg { width: 100%; height: 100%; object-fit: cover; }
+
+.resultName { font-size: 13px; color: rgba(240,240,245,0.8); }
+
+/* Mobile elements — hidden on desktop */
+.mobileRight {
+  display: none;
+  align-items: center;
+  gap: 0.25rem;
 }
 
-.resultName {
-  font-size: 13px;
-  color: rgba(240,240,245,0.8);
+.hamburger {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  background: none;
+  color: rgba(240,240,245,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Mobile fullscreen menu */
+.mobileMenu {
+  display: none;
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #080810;
+  z-index: 99;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  animation: slideIn 0.2s ease;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.mobileMenuLinks {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1.5rem;
+  gap: 0.25rem;
+}
+
+.mobileLink {
+  font-size: 16px;
+  font-weight: 500;
+  color: rgba(240,240,245,0.7);
+  background: none;
+  border: none;
+  padding: 0.875rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: background 0.15s, color 0.15s;
+}
+
+.mobileLink:hover { background: rgba(255,255,255,0.05); color: #f0f0f5; }
+
+.mobileLinkAccent {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: #6c63ff;
+  border: none;
+  padding: 0.875rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  margin-top: 0.25rem;
+}
+
+.mobileDivider {
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  margin: 0.5rem 0;
+}
+
+/* Mobile search dropdown */
+.searchWrapMobile { position: relative; }
+
+.searchDropdownMobile {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  background: #0f0f1a;
+  border-bottom: 1px solid rgba(255,255,255,0.09);
+  padding: 0.75rem 1rem;
+  z-index: 200;
+}
+
+/* ─── RESPONSIVE ─────────────────────────────── */
+@media (max-width: 768px) {
+  .nav { padding: 0 1rem; }
+  .centerLinks { display: none; }
+  .rightIcons { display: none; }
+  .mobileRight { display: flex; }
+  .mobileMenu { display: block; }
 }

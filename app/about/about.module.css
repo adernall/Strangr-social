@@ -12,7 +12,6 @@
   padding: 0 1.5rem 6rem;
 }
 
-/* Hero */
 .hero {
   padding: 5rem 0 4rem;
   border-bottom: 1px solid rgba(255,255,255,0.06);
@@ -48,16 +47,13 @@
   max-width: 560px;
 }
 
-/* Sections */
 .section {
   margin-bottom: 4rem;
   padding-bottom: 4rem;
   border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
-.sectionInner {
-  max-width: 620px;
-}
+.sectionInner { max-width: 620px; }
 
 .sectionLabel {
   font-size: 11px;
@@ -83,7 +79,6 @@
   margin-bottom: 1rem;
 }
 
-/* Values */
 .valuesSection {
   margin-bottom: 4rem;
   padding-bottom: 4rem;
@@ -103,25 +98,10 @@
   padding: 1.5rem;
 }
 
-.valueIcon {
-  font-size: 1.4rem;
-  display: block;
-  margin-bottom: 0.875rem;
-}
+.valueIcon { font-size: 1.4rem; display: block; margin-bottom: 0.875rem; }
+.valueTitle { font-size: 15px; font-weight: 600; margin-bottom: 0.5rem; }
+.valueDesc { font-size: 13.5px; color: rgba(240,240,245,0.5); line-height: 1.7; }
 
-.valueTitle {
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.valueDesc {
-  font-size: 13.5px;
-  color: rgba(240,240,245,0.5);
-  line-height: 1.7;
-}
-
-/* Stats */
 .statsSection {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -139,13 +119,24 @@
   gap: 0.5rem;
 }
 
-.statNum {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #6c63ff;
-}
+.statNum { font-size: 2rem; font-weight: 700; color: #6c63ff; }
+.statLabel { font-size: 13px; color: rgba(240,240,245,0.45); }
 
-.statLabel {
-  font-size: 13px;
-  color: rgba(240,240,245,0.45);
+/* ─── RESPONSIVE ─────────────────────────────── */
+@media (max-width: 768px) {
+  .main { padding: 0 1rem 4rem; }
+
+  .hero { padding: 3rem 0 2.5rem; margin-bottom: 2.5rem; }
+
+  .sub { font-size: 0.95rem; }
+
+  .section { margin-bottom: 2.5rem; padding-bottom: 2.5rem; }
+
+  .sectionTitle { font-size: 1.3rem; }
+
+  .valuesGrid { grid-template-columns: 1fr; }
+
+  .statsSection { grid-template-columns: 1fr; }
+
+  .statCard { padding: 1.25rem; flex-direction: row; justify-content: space-between; }
 }

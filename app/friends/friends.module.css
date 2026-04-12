@@ -30,22 +30,15 @@
   padding: 3rem 1.5rem 6rem;
 }
 
-.header {
-  margin-bottom: 2rem;
-}
+.header { margin-bottom: 2rem; }
 
-.title {
-  font-size: 1.6rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
+.title { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; }
 
 .tabs {
   display: flex;
   gap: 0.25rem;
   margin-bottom: 1.5rem;
   border-bottom: 1px solid rgba(255,255,255,0.06);
-  padding-bottom: 0;
 }
 
 .tab {
@@ -66,11 +59,7 @@
 }
 
 .tab:hover { color: #f0f0f5; }
-
-.activeTab {
-  color: #f0f0f5;
-  border-bottom-color: #6c63ff;
-}
+.activeTab { color: #f0f0f5; border-bottom-color: #6c63ff; }
 
 .count {
   font-size: 11px;
@@ -88,11 +77,7 @@
   border-radius: 100px;
 }
 
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
+.list { display: flex; flex-direction: column; gap: 0.5rem; }
 
 .empty {
   text-align: center;
@@ -101,11 +86,7 @@
   font-size: 15px;
 }
 
-.emptyHint {
-  font-size: 13px;
-  margin-top: 0.5rem;
-  color: rgba(240,240,245,0.2);
-}
+.emptyHint { font-size: 13px; margin-top: 0.5rem; color: rgba(240,240,245,0.2); }
 
 .userRow {
   display: flex;
@@ -145,17 +126,9 @@
   overflow: hidden;
 }
 
-.avatarImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+.avatarImg { width: 100%; height: 100%; object-fit: cover; }
 
-.username {
-  font-size: 14px;
-  font-weight: 500;
-  color: #f0f0f5;
-}
+.username { font-size: 14px; font-weight: 500; color: #f0f0f5; }
 
 .bio {
   font-size: 12px;
@@ -166,11 +139,7 @@
   max-width: 260px;
 }
 
-.rowActions {
-  display: flex;
-  gap: 0.5rem;
-  flex-shrink: 0;
-}
+.rowActions { display: flex; gap: 0.5rem; flex-shrink: 0; }
 
 .msgBtn {
   font-size: 13px;
@@ -231,3 +200,20 @@
 }
 
 .rejectBtn:hover { background: rgba(255,255,255,0.05); }
+
+/* ─── RESPONSIVE ─────────────────────────────── */
+@media (max-width: 768px) {
+  .main { padding: 2rem 1rem 5rem; }
+  .title { font-size: 1.35rem; }
+
+  .userRow { padding: 0.75rem; gap: 0.75rem; }
+
+  .bio { display: none; }
+
+  .rowActions { gap: 0.35rem; }
+
+  .msgBtn, .removeBtn, .acceptBtn, .rejectBtn {
+    font-size: 12px;
+    padding: 0.4rem 0.625rem;
+  }
+}

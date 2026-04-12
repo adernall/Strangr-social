@@ -1,4 +1,3 @@
-// app/page.js
 'use client'
 
 import { useState, useEffect, Suspense } from 'react'
@@ -11,7 +10,7 @@ import styles from './page.module.css'
 
 const ParticlesBg = dynamic(() => import('../components/ParticlesBg'), { ssr: false })
 
-export default function HomePage() {
+function HomePageInner() {
   const { user } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -100,7 +99,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Auth Modal */}
       {showAuth && (
         <div className={styles.overlay} onClick={() => { setShowAuth(null); router.replace('/') }}>
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -172,10 +170,6 @@ export default function HomePage() {
       )}
     </main>
   )
-}
-function HomePageInner() {
-  // ... your entire existing HomePage function content goes here
-  // rename HomePage to HomePageInner
 }
 
 export default function HomePage() {

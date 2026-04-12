@@ -38,25 +38,39 @@ export default function HomePage() {
   }
 
   async function handleLogin() {
-    setError('')
-    setLoading(true)
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    setLoading(false)
-    if (error) return setError(error.message)
-    setShowAuth(null)
-    resetForm()
+  setError('')
+  setLoading(true)
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+  setLoading(false)
+  if (error) return setError(error.message)
+
+  // Check if profile exists
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('id', data.user.id)
+    .single()
+
+  setShowAuth(null)
+  resetForm()
+
+  if (!profile) {
+    router.push('/setup-profile')
+  } else {
+    router.push('/dashboard')
   }
+}
 
   async function handleSignup() {
-    setError('')
-    if (password !== confirm) return setError('Passwords do not match.')
-    if (password.length < 6) return setError('Password must be at least 6 characters.')
-    setLoading(true)
-    const { error } = await supabase.auth.signUp({ email, password })
-    setLoading(false)
-    if (error) return setError(error.message)
-    setMessage('Check your email to confirm your account.')
-  }
+  setError('')
+  if (password !== confirm) return setError('Passwords do not match.')
+  if (password.length < 6) return setError('Password must be at least 6 characters.')
+  setLoading(true)
+  const { error } = await supabase.auth.signUp({ email, password })
+  setLoading(false)
+  if (error) return setError(error.message)
+  setMessage('Check your email to confirm your account, then log in.')
+}
 
   async function handleReset() {
     setError('')

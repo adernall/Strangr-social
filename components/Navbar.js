@@ -1,4 +1,3 @@
-// components/Navbar.js
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
@@ -33,7 +32,6 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClick)
   }, [])
 
-  // Close mobile menu on route change
   useEffect(() => { setMenuOpen(false) }, [pathname])
 
   async function handleSearch(q) {
@@ -78,11 +76,11 @@ export default function Navbar() {
             </span>
             {moreOpen && (
               <div className={styles.dropdown}>
-                <div className={styles.dropItem} onClick={() => { router.push('/friends'); setMoreOpen(false) }}>Friends</div>
-                <div className={styles.dropItem} onClick={() => { router.push('/about#team'); setMoreOpen(false) }}>Our Team</div>
-                <div className={styles.dropItem} onClick={() => { router.push('/about#mission'); setMoreOpen(false) }}>Our Mission</div>
-                <div className={styles.dropItem} onClick={() => { router.push('/support#faq'); setMoreOpen(false) }}>FAQ</div>
+                <div className={styles.dropItem} onClick={() => { requireAuth('/friends'); setMoreOpen(false) }}>Friends</div>
+                <div className={styles.dropItem} onClick={() => { requireAuth('/groups'); setMoreOpen(false) }}>Groups</div>
                 <div className={styles.dropDivider} />
+                <div className={styles.dropItem} onClick={() => { router.push('/about#team'); setMoreOpen(false) }}>Our Team</div>
+                <div className={styles.dropItem} onClick={() => { router.push('/support#faq'); setMoreOpen(false) }}>FAQ</div>
                 <div className={styles.dropItem} onClick={() => { router.push('/support#contact'); setMoreOpen(false) }}>Contact us</div>
               </div>
             )}
@@ -129,7 +127,7 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Mobile right side */}
+        {/* Mobile right */}
         <div className={styles.mobileRight}>
           <div className={styles.searchWrapMobile} ref={searchRef}>
             <button className={styles.iconBtn} onClick={() => { setSearchOpen(!searchOpen); setSearchQuery(''); setSearchResults([]) }}>
@@ -159,27 +157,26 @@ export default function Navbar() {
               </div>
             )}
           </div>
-
-          <button className={styles.hamburger} onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
+          <button className={styles.hamburger} onClick={() => setMenuOpen(!menuOpen)}>
             {menuOpen ? <CloseIcon /> : <HamburgerIcon />}
           </button>
         </div>
       </nav>
 
-      {/* Mobile menu overlay */}
+      {/* Mobile menu */}
       {menuOpen && (
         <div className={styles.mobileMenu}>
           <div className={styles.mobileMenuLinks}>
             <button className={styles.mobileLink} onClick={() => navigate('/about')}>About</button>
             <button className={styles.mobileLink} onClick={() => navigate('/how-it-works')}>How it works</button>
             <button className={styles.mobileLink} onClick={() => navigate('/support')}>Support</button>
-            <button className={styles.mobileLink} onClick={() => navigate('/friends')}>Friends</button>
+            <div className={styles.mobileDivider} />
+            <button className={styles.mobileLink} onClick={() => { setMenuOpen(false); requireAuth('/friends') }}>Friends</button>
+            <button className={styles.mobileLink} onClick={() => { setMenuOpen(false); requireAuth('/groups') }}>Groups</button>
+            <button className={styles.mobileLink} onClick={() => { setMenuOpen(false); requireAuth('/inbox') }}>Inbox</button>
             <div className={styles.mobileDivider} />
             {user ? (
-              <>
-                <button className={styles.mobileLink} onClick={() => navigate('/inbox')}>Inbox</button>
-                <button className={styles.mobileLink} onClick={() => navigate('/dashboard')}>My Profile</button>
-              </>
+              <button className={styles.mobileLink} onClick={() => navigate('/dashboard')}>My Profile</button>
             ) : (
               <button className={styles.mobileLinkAccent} onClick={() => { setMenuOpen(false); router.push('/?auth=login') }}>Log in / Sign up</button>
             )}

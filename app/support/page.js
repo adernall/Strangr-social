@@ -32,7 +32,7 @@ export default function SupportPage() {
 
   return (
     <div className={styles.page}>
-      <AppShell />
+      <AppShell>...</AppShell>
       <main className={styles.main}>
 
         <section className={styles.hero}>

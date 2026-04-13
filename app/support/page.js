@@ -2,7 +2,6 @@
 'use client'
 
 import { useState } from 'react'
-import AppShell from '../../components/AppShell'
 import styles from './support.module.css'
 import AppShell from '@/components/AppShell'
 

@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../lib/AuthContext'
-import AppShell from '../../components/AppShell'
 import styles from './friends.module.css'
 import AppShell from '@/components/AppShell'
 

@@ -1,4 +1,5 @@
 // app/about/page.js
+import AppShell from '@/components/AppShell'
 import Navbar from '../../components/Navbar'
 import styles from './about.module.css'
 

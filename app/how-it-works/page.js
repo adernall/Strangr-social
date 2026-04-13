@@ -21,7 +21,7 @@ const accountSteps = [
 export default function HowItWorksPage() {
   return (
     <div className={styles.page}>
-      <AppShell>...</AppShell>
+      <AppShell/>
       <main className={styles.main}>
 
         <section className={styles.hero}>

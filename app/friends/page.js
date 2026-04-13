@@ -77,7 +77,7 @@ export default function FriendsPage() {
   if (authLoading || loading) {
     return (
       <div className={styles.page}>
-        <AppShell>...</AppShell>
+        <AppShell/>
         <div className={styles.loading}><div className={styles.spinner} /></div>
       </div>
     )
@@ -85,7 +85,7 @@ export default function FriendsPage() {
 
   return (
     <div className={styles.page}>
-      <AppShell>...</AppShell>
+      <AppShell/>
       <main className={styles.main}>
         <div className={styles.header}>
           <h1 className={styles.title}>Friends</h1>

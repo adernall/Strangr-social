@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { supabase } from '../../../lib/supabase'
 import { useAuth } from '../../../lib/AuthContext'
-import Navbar from '../../../components/Navbar'
+import AppShell from '../../../components/AppShell'
 import styles from './profile.module.css'
 
 export default function ProfilePage() {

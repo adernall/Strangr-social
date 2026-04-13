@@ -4,9 +4,9 @@ import { useState, useRef, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/AuthContext'
-import styles from './Navbar.module.css'
+import styles from './AppShell.module.css'
 
-export default function Navbar() {
+export default function AppShell() {
   const { user } = useAuth()
   const router = useRouter()
   const pathname = usePathname()

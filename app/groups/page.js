@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../lib/AuthContext'
-import Navbar from '../../components/Navbar'
+import AppShell from '../../components/AppShell'
 import styles from './groups.module.css'
 
 export default function GroupsPage() {
@@ -56,7 +56,7 @@ export default function GroupsPage() {
   if (authLoading || loading) {
     return (
       <div className={styles.page}>
-        <Navbar />
+        <AppShell />
         <div className={styles.loading}><div className={styles.spinner} /></div>
       </div>
     )
@@ -64,7 +64,7 @@ export default function GroupsPage() {
 
   return (
     <div className={styles.page}>
-      <Navbar />
+      <AppShell />
       <main className={styles.main}>
         <div className={styles.header}>
           <h1 className={styles.title}>Groups</h1>

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../lib/AuthContext'
-import Navbar from '../../components/Navbar'
+import AppShell from '../../components/AppShell'
 import styles from './friends.module.css'
 import AppShell from '@/components/AppShell'
 
@@ -114,7 +114,7 @@ export default function FriendsPage() {
             {friends.length === 0 ? (
               <div className={styles.empty}>
                 <p>No friends yet.</p>
-                <p className={styles.emptyHint}>Search for users in the navbar to add them.</p>
+                <p className={styles.emptyHint}>Search for users in the AppShell to add them.</p>
               </div>
             ) : (
               friends.map((f) => (

@@ -1,5 +1,5 @@
 // app/about/page.js
-import Navbar from '../../components/Navbar'
+import AppShell from '../../components/AppShell'
 import styles from './about.module.css'
 
 export const metadata = {

@@ -2,7 +2,7 @@
 'use client'
 
 import { useState } from 'react'
-import Navbar from '../../components/Navbar'
+import AppShell from '../../components/AppShell'
 import styles from './support.module.css'
 import AppShell from '@/components/AppShell'
 

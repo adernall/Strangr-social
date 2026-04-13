@@ -1,0 +1,28 @@
+/* components/AppShell.module.css */
+.shell {
+  min-height: 100vh;
+  background: #080810;
+  font-family: var(--font-outfit), sans-serif;
+}
+
+.main {
+  padding-top: 54px;
+  padding-left: 56px;
+  min-height: 100vh;
+  transition: padding-left 0.22s cubic-bezier(0.4,0,0.2,1);
+}
+
+.noPadding {
+  padding: 54px 0 0 56px;
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding-left: 0;
+    padding-bottom: 60px;
+  }
+
+  .noPadding {
+    padding: 54px 0 60px 0;
+  }
+}

@@ -9,7 +9,7 @@ export const metadata = {
 export default function AboutPage() {
   return (
     <div className={styles.page}>
-      <Navbar />
+      <AppShell />
       <main className={styles.main}>
 
         {/* Hero */}

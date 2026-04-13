@@ -4,6 +4,7 @@
 import { useState } from 'react'
 import Navbar from '../../components/Navbar'
 import styles from './support.module.css'
+import AppShell from '@/components/AppShell'
 
 const faqs = [
   { q: 'Do I need an account to chat?', a: 'No. Anonymous chat is completely free and requires no signup. Just click "Start chatting" and you\'re connected instantly.' },
@@ -31,7 +32,7 @@ export default function SupportPage() {
 
   return (
     <div className={styles.page}>
-      <Navbar />
+      <AppShell />
       <main className={styles.main}>
 
         <section className={styles.hero}>

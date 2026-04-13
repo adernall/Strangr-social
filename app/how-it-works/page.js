@@ -1,4 +1,5 @@
 // app/how-it-works/page.js
+import AppShell from '@/components/AppShell'
 import Navbar from '../../components/Navbar'
 import styles from './hiw.module.css'
 
@@ -21,7 +22,7 @@ const accountSteps = [
 export default function HowItWorksPage() {
   return (
     <div className={styles.page}>
-      <Navbar />
+      <AppShell />
       <main className={styles.main}>
 
         <section className={styles.hero}>

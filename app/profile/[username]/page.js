@@ -126,7 +126,7 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className={styles.page}>
-        <Navbar />
+        <AppShell />
         <div className={styles.loading}><div className={styles.spinner} /></div>
       </div>
     )
@@ -135,7 +135,7 @@ export default function ProfilePage() {
   if (!profile) {
     return (
       <div className={styles.page}>
-        <Navbar />
+        <AppShell />
         <div className={styles.notFound}>
           <p>User not found.</p>
           <button onClick={() => router.push('/')}>Go home</button>
@@ -148,7 +148,7 @@ export default function ProfilePage() {
 
   return (
     <div className={styles.page}>
-      <Navbar />
+      <AppShell />
       <main className={styles.main}>
         <div className={styles.card}>
 

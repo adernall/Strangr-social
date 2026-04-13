@@ -1,0 +1,97 @@
+/* components/Sidebar.module.css */
+.sidebar {
+  position: fixed;
+  top: 54px;
+  left: 0;
+  bottom: 0;
+  width: 56px;
+  background: #0e0e16;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  z-index: 100;
+  overflow: hidden;
+  transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: var(--font-outfit), sans-serif;
+}
+
+.sidebar:hover {
+  width: 220px;
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0.75rem 0;
+  width: 220px; /* inner is always full width */
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0 0.5rem;
+  flex: 1;
+}
+
+.bottom {
+  padding: 0 0.5rem 0.5rem;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  border-radius: 10px;
+  background: none;
+  border: none;
+  color: rgba(240,240,245,0.45);
+  cursor: pointer;
+  font-family: inherit;
+  width: 100%;
+  text-align: left;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.navItem:hover {
+  background: rgba(255,255,255,0.06);
+  color: rgba(240,240,245,0.9);
+}
+
+.active {
+  color: #f0f0f5 !important;
+  background: rgba(108,99,255,0.12) !important;
+}
+
+.active .icon {
+  color: #6c63ff;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.sidebar:hover .label {
+  opacity: 1;
+}
+
+/* Mobile: hide sidebar, show bottom bar instead */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+}

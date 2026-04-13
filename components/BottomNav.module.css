@@ -1,0 +1,39 @@
+/* components/BottomNav.module.css */
+.nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: #0e0e16;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  z-index: 200;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 0.5rem;
+}
+
+.item {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: none;
+  border: none;
+  color: rgba(240,240,245,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+
+.item:hover { color: #f0f0f5; }
+
+.active {
+  color: #6c63ff !important;
+}
+
+@media (max-width: 768px) {
+  .nav { display: flex; }
+}

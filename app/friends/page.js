@@ -7,6 +7,7 @@ import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../lib/AuthContext'
 import Navbar from '../../components/Navbar'
 import styles from './friends.module.css'
+import AppShell from '@/components/AppShell'
 
 export default function FriendsPage() {
   const { user, loading: authLoading } = useAuth()
@@ -77,7 +78,7 @@ export default function FriendsPage() {
   if (authLoading || loading) {
     return (
       <div className={styles.page}>
-        <Navbar />
+        <AppShell />
         <div className={styles.loading}><div className={styles.spinner} /></div>
       </div>
     )
@@ -85,7 +86,7 @@ export default function FriendsPage() {
 
   return (
     <div className={styles.page}>
-      <Navbar />
+      <AppShell />
       <main className={styles.main}>
         <div className={styles.header}>
           <h1 className={styles.title}>Friends</h1>

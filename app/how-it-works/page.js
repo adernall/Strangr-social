@@ -1,6 +1,6 @@
 // app/how-it-works/page.js
 import AppShell from '@/components/AppShell'
-import Navbar from '../../components/Navbar'
+import AppShell from '../../components/AppShell'
 import styles from './hiw.module.css'
 
 export const metadata = { title: 'How It Works — Strangr' }
@@ -22,7 +22,7 @@ const accountSteps = [
 export default function HowItWorksPage() {
   return (
     <div className={styles.page}>
-      <AppShell />
+      <AppShell>...</AppShell>
       <main className={styles.main}>
 
         <section className={styles.hero}>

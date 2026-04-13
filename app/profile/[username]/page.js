@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { supabase } from '../../../lib/supabase'
 import { useAuth } from '../../../lib/AuthContext'
-import Navbar from '../../../components/Navbar'
+import AppShell from '../../../components/AppShell'
 import styles from './profile.module.css'
 
 export default function ProfilePage() {
@@ -126,7 +126,7 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className={styles.page}>
-        <AppShell />
+        <AppShell>...</AppShell>
         <div className={styles.loading}><div className={styles.spinner} /></div>
       </div>
     )
@@ -135,7 +135,7 @@ export default function ProfilePage() {
   if (!profile) {
     return (
       <div className={styles.page}>
-        <AppShell />
+        <AppShell>...</AppShell>
         <div className={styles.notFound}>
           <p>User not found.</p>
           <button onClick={() => router.push('/')}>Go home</button>
@@ -148,7 +148,7 @@ export default function ProfilePage() {
 
   return (
     <div className={styles.page}>
-      <AppShell />
+      <AppShell>...</AppShell>
       <main className={styles.main}>
         <div className={styles.card}>
 

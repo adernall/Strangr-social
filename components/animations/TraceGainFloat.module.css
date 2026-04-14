@@ -1,0 +1,32 @@
+/* components/animations/TraceGainFloat.module.css */
+.float {
+  position: fixed;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #6c63ff;
+  text-shadow: 0 0 12px rgba(108,99,255,0.6);
+  pointer-events: none;
+  z-index: 9999;
+  animation: floatUp 2.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+
+.bottom-right {
+  bottom: 80px;
+  right: 24px;
+}
+
+.center {
+  bottom: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@keyframes floatUp {
+  0%   { opacity: 0; transform: translateY(10px); }
+  15%  { opacity: 1; transform: translateY(0px); }
+  70%  { opacity: 1; transform: translateY(-24px); }
+  100% { opacity: 0; transform: translateY(-44px); }
+}

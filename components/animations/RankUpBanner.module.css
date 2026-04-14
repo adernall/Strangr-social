@@ -1,0 +1,70 @@
+/* components/animations/RankUpBanner.module.css */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(8px);
+  animation: overlayIn 0.3s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  animation: bannerIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+  text-align: center;
+  padding: 2rem;
+}
+
+@keyframes bannerIn {
+  from { opacity: 0; transform: scale(0.7) translateY(40px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.label {
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: rgba(240,240,245,0.4);
+  animation: fadeInUp 0.4s ease 0.3s both;
+}
+
+.arrow {
+  font-size: 1.5rem;
+  color: rgba(240,240,245,0.25);
+  animation: fadeInUp 0.4s ease 0.5s both;
+}
+
+.rankName {
+  font-family: var(--font-outfit), sans-serif;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  animation: fadeInUp 0.4s ease 0.55s both;
+}
+
+.desc {
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 15px;
+  color: rgba(240,240,245,0.5);
+  font-style: italic;
+  max-width: 300px;
+  animation: fadeInUp 0.4s ease 0.65s both;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

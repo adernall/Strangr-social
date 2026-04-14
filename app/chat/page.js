@@ -5,6 +5,10 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '../../lib/supabase'
 import styles from './chat.module.css'
+import { useAuth } from '../../lib/AuthContext'
+import { awardSessionTrace } from '../../lib/traceService'
+import { useSessionTimer } from '../../hooks/useSessionTimer'
+
 
 // Generate or retrieve a session ID for this anonymous user
 function getSessionId() {
@@ -27,6 +31,9 @@ export default function ChatPage() {
   const bottomRef = useRef(null)
   const roomChannel = useRef(null)
   const msgChannel = useRef(null)
+  const { user } = useAuth()
+  const { activeMinutes, resetTimer } = useSessionTimer()
+
 
   useEffect(() => {
     startMatching()
@@ -149,6 +156,15 @@ export default function ChatPage() {
     setRoomId(null)
     setStatus('searching')
     startMatching()
+  
+   if (user) 
+    await awardSessionTrace({
+      userId: user.id,
+      partnerId: null,
+      sessionType: 'anonymous',
+      activeMinutes: 5,         // You'll wire useSessionTimer here later
+      messageCount: messages.length,
+    })
   }
 
   function cleanup() {

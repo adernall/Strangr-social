@@ -1,0 +1,250 @@
+/* app/rank/rank.module.css */
+.page {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 6rem;
+  font-family: var(--font-outfit), sans-serif;
+  color: #f0f0f5;
+}
+
+/* My rank summary */
+.myRank {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 18px;
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.myRankBadge { flex-shrink: 0; }
+
+.myRankInfo { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
+
+.myRankLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: rgba(240,240,245,0.3);
+}
+
+.myRankName {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.myRankDesc {
+  font-size: 14px;
+  color: rgba(240,240,245,0.45);
+  font-style: italic;
+}
+
+.myTraceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  margin: 0.25rem 0;
+}
+
+.myTraceNum {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #f0f0f5;
+}
+
+.myTraceLabel {
+  font-size: 0.9rem;
+  color: rgba(240,240,245,0.4);
+}
+
+.myProgress { max-width: 380px; }
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  margin-bottom: 1.75rem;
+}
+
+.tab {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(240,240,245,0.4);
+  background: none;
+  border: none;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  font-family: inherit;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.2s, border-color 0.2s;
+  text-transform: capitalize;
+}
+
+.tab:hover { color: #f0f0f5; }
+.activeTab { color: #f0f0f5; border-bottom-color: #6c63ff; }
+
+/* All Ranks */
+.allRanks { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.rankRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.02);
+  transition: background 0.15s;
+}
+
+.currentRankRow {
+  border-color: rgba(108,99,255,0.25) !important;
+  background: rgba(108,99,255,0.06) !important;
+}
+
+.pastRankRow { opacity: 0.7; }
+
+.rankRowInfo { flex: 1; min-width: 0; }
+
+.rankRowTop {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-bottom: 0.2rem;
+}
+
+.rankRowName { font-size: 15px; font-weight: 700; }
+
+.currentBadge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #6c63ff;
+  background: rgba(108,99,255,0.15);
+  border: 1px solid rgba(108,99,255,0.3);
+  padding: 1px 8px;
+  border-radius: 100px;
+}
+
+.achievedBadge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: rgba(50,210,120,0.8);
+  background: rgba(50,210,120,0.08);
+  border: 1px solid rgba(50,210,120,0.2);
+  padding: 1px 8px;
+  border-radius: 100px;
+}
+
+.rankRowDesc { font-size: 12px; color: rgba(240,240,245,0.5); font-style: italic; }
+.rankRowThreshold { font-size: 11px; color: rgba(240,240,245,0.3); margin-top: 2px; }
+
+.rankRowProgress { width: 140px; flex-shrink: 0; }
+
+/* Leaderboard */
+.leaderboard { display: flex; flex-direction: column; gap: 0.35rem; }
+
+.lbRow {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.lbRow:hover { background: rgba(255,255,255,0.05); }
+.lbMe { border-color: rgba(108,99,255,0.25) !important; background: rgba(108,99,255,0.05) !important; }
+
+.lbPos {
+  font-size: 13px;
+  font-weight: 700;
+  min-width: 24px;
+  text-align: center;
+}
+
+.lbAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(108,99,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6c63ff;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.lbAvatarImg { width: 100%; height: 100%; object-fit: cover; }
+
+.lbInfo { flex: 1; min-width: 0; }
+.lbUsername { font-size: 13px; font-weight: 500; color: #f0f0f5; }
+.lbRankName { font-size: 11px; font-weight: 600; }
+
+.lbTrace {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(240,240,245,0.5);
+  min-width: 48px;
+  text-align: right;
+}
+
+/* History */
+.history { display: flex; flex-direction: column; }
+
+.historyRow {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.875rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.historyDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.historyInfo { flex: 1; }
+.historyType { font-size: 13px; font-weight: 500; color: #f0f0f5; }
+.historyMeta { font-size: 11px; color: rgba(240,240,245,0.3); margin-top: 1px; }
+
+.historyAmount {
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* Shared */
+.loadingRow { display: flex; justify-content: center; padding: 3rem; }
+.spinner {
+  width: 26px; height: 26px;
+  border: 2px solid rgba(108,99,255,0.2);
+  border-top-color: #6c63ff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.empty { text-align: center; padding: 3rem; color: rgba(240,240,245,0.25); font-size: 14px; }
+
+@media (max-width: 600px) {
+  .myRank { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+  .rankRowProgress { display: none; }
+  .page { padding: 1.5rem 1rem 5rem; }
+}

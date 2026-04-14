@@ -4,12 +4,16 @@ import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../lib/AuthContext'
+import { useTraceContext } from '../../components/TraceProvider'
 import AppShell from '../../components/AppShell'
+import HexBadge from '../../components/badges/HexBadge'
+import TraceProgressBar from '../../components/rank/TraceProgressBar'
 import styles from './dashboard.module.css'
 
 export default function Dashboard() {
   const { user, loading: authLoading } = useAuth()
   const router = useRouter()
+  const { rank, nextRank, trace, progress, traceToNext } = useTraceContext()
 
   const [profile, setProfile] = useState(null)
   const [username, setUsername] = useState('')
@@ -64,11 +68,10 @@ export default function Dashboard() {
 
     const { error: updateError } = await supabase
       .from('profiles')
-      .update({ username: username.trim().toLowerCase(), bio: bio.trim(), avatar_url })
+      .update({ username: username.trim().toLowerCase(), bio: bio.trim(), avatar_url, display_name: displayName.trim() })
       .eq('id', user.id)
 
     setSaving(false)
-
     if (updateError) {
       if (updateError.message.includes('unique')) return setError('Username already taken.')
       return setError(updateError.message)
@@ -90,18 +93,19 @@ export default function Dashboard() {
   }
 
   async function handleDeleteAccount() {
-    // Sign out and delete profile (cascade handles the rest)
     await supabase.from('profiles').delete().eq('id', user.id)
     await supabase.auth.signOut()
     router.push('/')
   }
 
+  function formatTrace(val) {
+    const n = Number(val) || 0
+    if (n >= 1000) return `${(n / 1000).toFixed(1)}k`
+    return n.toFixed(1)
+  }
+
   if (authLoading || !profile) {
-    return (
-      <AppShell>
-        <div className={styles.loading}><div className={styles.spinner} /></div>
-      </AppShell>
-    )
+    return <AppShell><div className={styles.loading}><div className={styles.spinner} /></div></AppShell>
   }
 
   const avatarSrc = avatarPreview || profile.avatar_url || null
@@ -109,7 +113,7 @@ export default function Dashboard() {
   return (
     <AppShell noPadding>
       <div className={styles.page}>
-        {/* Top save/discard bar */}
+        {/* Save bar */}
         {dirty && (
           <div className={styles.saveBar}>
             <div className={styles.saveBarLeft} />
@@ -123,46 +127,36 @@ export default function Dashboard() {
         )}
 
         <div className={styles.content}>
-          {/* Left column */}
+          {/* Left column — profile editing */}
           <div className={styles.leftCol}>
-            {/* Avatar */}
             <div className={styles.avatarSection}>
               <div className={styles.avatarCircle} onClick={() => fileRef.current.click()}>
                 {avatarSrc ? (
                   <img src={avatarSrc} alt="" className={styles.avatarImg} />
                 ) : (
-                  <div className={styles.avatarPlaceholder}>
-                    <UserIcon />
-                  </div>
+                  <div className={styles.avatarPlaceholder}><UserIcon /></div>
                 )}
                 <div className={styles.avatarOverlay}>Change</div>
               </div>
               <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAvatarChange} />
             </div>
 
-            {/* Username */}
             <div className={styles.nameRow}>
               <span className={styles.usernameText}>@{username}</span>
               <button className={styles.editIconBtn} onClick={() => {
-                const newName = prompt('New username:', username)
-                if (newName && newName !== username) { setUsername(newName); setDirty(true) }
-              }}>
-                <EditIcon />
-              </button>
+                const v = prompt('New username:', username)
+                if (v && v !== username) { setUsername(v); setDirty(true) }
+              }}><EditIcon /></button>
             </div>
 
-            {/* Display name */}
             <div className={styles.nameRow}>
               <span className={styles.displayNameText}>{displayName || user.email}</span>
               <button className={styles.editIconBtn} onClick={() => {
-                const newDisplay = prompt('Display name:', displayName)
-                if (newDisplay !== null && newDisplay !== displayName) { setDisplayName(newDisplay); setDirty(true) }
-              }}>
-                <EditIcon />
-              </button>
+                const v = prompt('Display name:', displayName)
+                if (v !== null && v !== displayName) { setDisplayName(v); setDirty(true) }
+              }}><EditIcon /></button>
             </div>
 
-            {/* About section */}
             <div className={styles.aboutSection}>
               <p className={styles.aboutLabel}>ABOUT</p>
               <textarea
@@ -176,7 +170,6 @@ export default function Dashboard() {
 
             {error && <p className={styles.errorMsg}>{error}</p>}
 
-            {/* Delete account */}
             {!showDeleteConfirm ? (
               <button className={styles.deleteBtn} onClick={() => setShowDeleteConfirm(true)}>
                 <TrashIcon /> Delete my account
@@ -192,9 +185,40 @@ export default function Dashboard() {
             )}
           </div>
 
-          {/* Right column — reserved for future ranking system */}
+          {/* Right column — Trace rank display */}
           <div className={styles.rightCol}>
-            <p className={styles.rightPlaceholder}>[leave this space for future. i will add a ranking system here.]</p>
+            {rank ? (
+              <div className={styles.tracePanel}>
+                <div className={styles.tracePanelBadge}>
+                  <HexBadge rank={rank} size="large" animated />
+                </div>
+                <div className={styles.tracePanelInfo}>
+                  <p className={styles.tracePanelLabel}>TRACE RANK</p>
+                  <h2 className={styles.tracePanelName} style={{ color: rank.color }}>{rank.name}</h2>
+                  <p className={styles.tracePanelDesc}>{rank.description}</p>
+                  <div className={styles.tracePanelNum}>
+                    <span className={styles.traceNumBig}>{formatTrace(trace)}</span>
+                    <span className={styles.traceNumLabel}>Trace</span>
+                  </div>
+                  <TraceProgressBar
+                    progress={progress}
+                    rank={rank}
+                    nextRank={nextRank}
+                    trace={trace}
+                    traceToNext={traceToNext}
+                    size="full"
+                    animated
+                  />
+                  <button className={styles.viewRankBtn} onClick={() => router.push('/rank')}>
+                    View full rank page →
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className={styles.rightPlaceholder}>
+                <p>Rank system loading...</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -203,27 +227,11 @@ export default function Dashboard() {
 }
 
 function UserIcon() {
-  return (
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-      <circle cx="12" cy="7" r="4"/>
-    </svg>
-  )
+  return <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
 }
-
 function EditIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
-      <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
-    </svg>
-  )
+  return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
 }
-
 function TrashIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'6px'}}>
-      <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
-    </svg>
-  )
+  return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'6px'}}><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
 }

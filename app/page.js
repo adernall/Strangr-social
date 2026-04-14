@@ -1,3 +1,7 @@
+// app/page.js
+// REPLACE your existing app/page.js with this.
+// For logged-in users, the hero section is replaced with the Trace rank display.
+
 'use client'
 
 import { useState, useEffect, Suspense } from 'react'
@@ -5,8 +9,10 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/AuthContext'
+import { useTraceContext } from '../components/TraceProvider'
 import TopBar from '../components/TopBar'
 import AppShell from '../components/AppShell'
+import RankCard from '../components/rank/RankCard'
 import styles from './page.module.css'
 
 const ParticlesBg = dynamic(() => import('../components/ParticlesBg'), { ssr: false })
@@ -15,6 +21,7 @@ function HomePageInner() {
   const { user, loading: authLoading } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { rank, nextRank, trace, progress, traceToNext, rankUpEvent } = useTraceContext()
 
   const [showAuth, setShowAuth] = useState(null)
   const [email, setEmail] = useState('')
@@ -39,11 +46,7 @@ function HomePageInner() {
     const { data } = await supabase
       .from('conversations')
       .select(`
-        id,
-        last_message,
-        last_message_at,
-        participant_1,
-        participant_2,
+        id, last_message, last_message_at, participant_1, participant_2,
         p1:profiles!conversations_participant_1_fkey(id, username, avatar_url),
         p2:profiles!conversations_participant_2_fkey(id, username, avatar_url)
       `)
@@ -64,21 +67,16 @@ function HomePageInner() {
     return new Date(ts).toLocaleDateString()
   }
 
-  function resetForm() {
-    setEmail(''); setPassword(''); setConfirm(''); setError(''); setMessage('')
-  }
-
+  function resetForm() { setEmail(''); setPassword(''); setConfirm(''); setError(''); setMessage('') }
   function openModal(type) { resetForm(); setShowAuth(type) }
 
   async function handleLogin() {
-    setError('')
-    setLoading(true)
+    setError(''); setLoading(true)
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     setLoading(false)
     if (error) return setError(error.message)
     const { data: profile } = await supabase.from('profiles').select('id').eq('id', data.user.id).single()
-    setShowAuth(null)
-    resetForm()
+    setShowAuth(null); resetForm()
     router.push(profile ? '/' : '/setup-profile')
   }
 
@@ -94,8 +92,7 @@ function HomePageInner() {
   }
 
   async function handleReset() {
-    setError('')
-    setLoading(true)
+    setError(''); setLoading(true)
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,
     })
@@ -104,31 +101,7 @@ function HomePageInner() {
     setMessage('Reset link sent — check your email.')
   }
 
-  const heroContent = (
-    <div className={styles.hero}>
-      <p className={styles.eyebrow}>ANONYMOUS · REAL-TIME · FREE</p>
-      <h1 className={styles.headline}>
-        Talk to a<br />
-        <span className={styles.accent}>stranger.</span>
-      </h1>
-      <p className={styles.sub}>
-        No account needed. Just click and connect<br />
-        with someone new, anywhere in the world.
-      </p>
-      <div className={styles.actions}>
-        <button className={styles.primaryBtn} onClick={() => router.push('/chat')}>
-          Start chatting →
-        </button>
-        {!user && (
-          <button className={styles.loginBtn} onClick={() => openModal('login')}>
-            LOGIN
-          </button>
-        )}
-      </div>
-    </div>
-  )
-
-  // Anonymous layout
+  // ── ANONYMOUS STATE ──
   if (!user && !authLoading) {
     return (
       <div className={styles.anonPage}>
@@ -136,7 +109,6 @@ function HomePageInner() {
         <div className={styles.blob1} />
         <div className={styles.blob2} />
 
-        {/* Minimal topbar for anon */}
         <header className={styles.anonTopbar}>
           <span className={styles.anonLogo}>Strangr</span>
           <div className={styles.anonTopRight}>
@@ -146,7 +118,15 @@ function HomePageInner() {
         </header>
 
         <div className={styles.anonCenter}>
-          {heroContent}
+          <div className={styles.hero}>
+            <p className={styles.eyebrow}>ANONYMOUS · REAL-TIME · FREE</p>
+            <h1 className={styles.headline}>Talk to a<br /><span className={styles.accent}>stranger.</span></h1>
+            <p className={styles.sub}>No account needed. Just click and connect<br />with someone new, anywhere in the world.</p>
+            <div className={styles.actions}>
+              <button className={styles.primaryBtn} onClick={() => router.push('/chat')}>Start chatting →</button>
+              <button className={styles.loginBtn} onClick={() => openModal('login')}>LOGIN</button>
+            </div>
+          </div>
         </div>
 
         {/* Auth modal */}
@@ -208,7 +188,7 @@ function HomePageInner() {
     )
   }
 
-  // Logged in layout
+  // ── LOGGED IN STATE ──
   return (
     <AppShell noPadding>
       <div className={styles.loggedPage}>
@@ -216,9 +196,30 @@ function HomePageInner() {
         <div className={styles.blob1} />
         <div className={styles.blob2} />
 
-        {/* Left: hero */}
+        {/* Left: Trace rank hero (replaces the old headline) */}
         <div className={styles.loggedLeft}>
-          {heroContent}
+          {rank ? (
+            <RankCard
+              rank={rank}
+              nextRank={nextRank}
+              trace={trace}
+              progress={progress}
+              traceToNext={traceToNext}
+              size="hero"
+              animated
+              showLevelUp={!!rankUpEvent}
+              onBadgeClick={() => router.push('/rank')}
+            />
+          ) : (
+            <div className={styles.rankLoading} />
+          )}
+
+          {/* Start chatting button still available */}
+          <div className={styles.loggedActions}>
+            <button className={styles.primaryBtn} onClick={() => router.push('/chat')}>
+              Start chatting →
+            </button>
+          </div>
         </div>
 
         {/* Right: recent messages */}
@@ -234,16 +235,9 @@ function HomePageInner() {
                   const other = getOtherProfile(conv)
                   if (!other) return null
                   return (
-                    <div
-                      key={conv.id}
-                      className={styles.msgCard}
-                      onClick={() => router.push(`/inbox/${conv.id}`)}
-                    >
+                    <div key={conv.id} className={styles.msgCard} onClick={() => router.push(`/inbox/${conv.id}`)}>
                       <div className={styles.msgAvatar}>
-                        {other.avatar_url
-                          ? <img src={other.avatar_url} alt="" className={styles.msgAvatarImg} />
-                          : <span>{other.username[0].toUpperCase()}</span>
-                        }
+                        {other.avatar_url ? <img src={other.avatar_url} alt="" className={styles.msgAvatarImg} /> : <span>{other.username[0].toUpperCase()}</span>}
                       </div>
                       <div className={styles.msgInfo}>
                         <p className={styles.msgUsername}>@{other.username}</p>
@@ -263,11 +257,7 @@ function HomePageInner() {
 }
 
 export default function HomePage() {
-  return (
-    <Suspense fallback={null}>
-      <HomePageInner />
-    </Suspense>
-  )
+  return <Suspense fallback={null}><HomePageInner /></Suspense>
 }
 
 function SearchIcon() {

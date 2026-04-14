@@ -1,0 +1,71 @@
+/* components/badges/HexBadge.module.css */
+.badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.clickable { cursor: pointer; }
+.clickable:hover { transform: scale(1.08); }
+
+.hexSvg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.iconWrap {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  object-fit: contain;
+  filter: drop-shadow(0 0 4px var(--rank-color));
+}
+
+.symbolFallback {
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-family: var(--font-outfit), sans-serif;
+  filter: drop-shadow(0 0 4px var(--rank-color));
+}
+
+/* Sizes — just for reference, actual size passed via style prop */
+.small  { }
+.medium { }
+.large  { }
+
+/* Glow animation for animated badges */
+.animated {
+  animation: badgeGlow 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes badgeGlow {
+  from { filter: drop-shadow(0 0 4px var(--rank-glow)); }
+  to   { filter: drop-shadow(0 0 14px var(--rank-glow)) drop-shadow(0 0 4px var(--rank-color)); }
+}
+
+/* Level up pop animation */
+.levelUp {
+  animation: levelUpPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+             levelUpGlow 3s ease-in-out 0.6s infinite alternate;
+}
+
+@keyframes levelUpPop {
+  0%   { transform: scale(0.6); opacity: 0; }
+  60%  { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes levelUpGlow {
+  from { filter: drop-shadow(0 0 8px var(--rank-glow)); }
+  to   { filter: drop-shadow(0 0 24px var(--rank-glow)) drop-shadow(0 0 8px var(--rank-color)); }
+}

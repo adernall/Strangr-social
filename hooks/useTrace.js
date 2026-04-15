@@ -48,41 +48,72 @@ export function useTrace() {
   }
 
   function subscribeToTrace() {
-    const channel = supabase
-      .channel(`trace-${user.id}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'profiles',
-          filter: `id=eq.${user.id}`,
-        },
-        (payload) => {
-          const newTrace = payload.new.trace
-          const newRankName = payload.new.rank_name
+  const channel = supabase
+    .channel(`trace-${user.id}`)
+    .on(
+      'postgres_changes',
+      {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'profiles',
+        filter: `id=eq.${user.id}`,
+      },
+      (payload) => {
+        const newTrace = payload.new.trace
+        const newRankName = payload.new.rank_name
 
-          // Trigger gain animation
-          const gained = newTrace - prevTraceRef.current
-          if (gained > 0.01) {
-            triggerGainAnimation(gained)
-          }
-
-          // Trigger rank up animation
-          if (prevRankRef.current && newRankName !== prevRankRef.current) {
-            setRankUpEvent({ from: prevRankRef.current, to: newRankName })
-            setTimeout(() => setRankUpEvent(null), 4000)
-          }
-
-          prevTraceRef.current = newTrace
-          prevRankRef.current = newRankName
-          updateLocalState(newTrace, newRankName)
+        const gained = newTrace - prevTraceRef.current
+        if (gained > 0.01) {
+          triggerGainAnimation(gained)
         }
-      )
-      .subscribe()
 
-    return () => channel.unsubscribe()
-  }
+        if (prevRankRef.current && newRankName !== prevRankRef.current) {
+          setRankUpEvent({ from: prevRankRef.current, to: newRankName })
+          setTimeout(() => setRankUpEvent(null), 4000)
+        }
+
+        prevTraceRef.current = newTrace
+        prevRankRef.current = newRankName
+        updateLocalState(newTrace, newRankName)
+      }
+    )
+    .subscribe()
+
+  return () => channel.unsubscribe()
+}function subscribeToTrace() {
+  const channel = supabase
+    .channel(`trace-${user.id}`)
+    .on(
+      'postgres_changes',
+      {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'profiles',
+        filter: `id=eq.${user.id}`,
+      },
+      (payload) => {
+        const newTrace = payload.new.trace
+        const newRankName = payload.new.rank_name
+
+        const gained = newTrace - prevTraceRef.current
+        if (gained > 0.01) {
+          triggerGainAnimation(gained)
+        }
+
+        if (prevRankRef.current && newRankName !== prevRankRef.current) {
+          setRankUpEvent({ from: prevRankRef.current, to: newRankName })
+          setTimeout(() => setRankUpEvent(null), 4000)
+        }
+
+        prevTraceRef.current = newTrace
+        prevRankRef.current = newRankName
+        updateLocalState(newTrace, newRankName)
+      }
+    )
+    .subscribe()
+
+  return () => channel.unsubscribe()
+}
 
   function updateLocalState(traceValue, rankName) {
     const t = Number(traceValue) || 0

@@ -1,7 +1,3 @@
-// app/page.js
-// REPLACE your existing app/page.js with this.
-// For logged-in users, the hero section is replaced with the Trace rank display.
-
 'use client'
 
 import { useState, useEffect, Suspense } from 'react'
@@ -20,7 +16,16 @@ function HomePageInner() {
   const { user, loading: authLoading } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { rank, nextRank, trace, progress, traceToNext, rankUpEvent } = useTraceContext()
+
+  // Safe destructure — context always returns defaults even if no user
+  const {
+    rank = null,
+    nextRank = null,
+    trace = 0,
+    progress = 0,
+    traceToNext = 0,
+    rankUpEvent = null,
+  } = useTraceContext()
 
   const [showAuth, setShowAuth] = useState(null)
   const [email, setEmail] = useState('')
@@ -42,41 +47,56 @@ function HomePageInner() {
   }, [user])
 
   async function fetchRecentMessages() {
-    const { data } = await supabase
-      .from('conversations')
-      .select(`
-        id, last_message, last_message_at, participant_1, participant_2,
-        p1:profiles!conversations_participant_1_fkey(id, username, avatar_url),
-        p2:profiles!conversations_participant_2_fkey(id, username, avatar_url)
-      `)
-      .or(`participant_1.eq.${user.id},participant_2.eq.${user.id}`)
-      .order('last_message_at', { ascending: false })
-      .limit(5)
-    setRecentMessages(data || [])
+    try {
+      const { data } = await supabase
+        .from('conversations')
+        .select(`
+          id, last_message, last_message_at, participant_1, participant_2,
+          p1:profiles!conversations_participant_1_fkey(id, username, avatar_url),
+          p2:profiles!conversations_participant_2_fkey(id, username, avatar_url)
+        `)
+        .or(`participant_1.eq.${user.id},participant_2.eq.${user.id}`)
+        .order('last_message_at', { ascending: false })
+        .limit(5)
+      setRecentMessages(data || [])
+    } catch (e) {
+      // fail silently — messages panel is not critical
+    }
   }
 
   function getOtherProfile(conv) {
+    if (!conv || !user) return null
     return conv.participant_1 === user.id ? conv.p2 : conv.p1
   }
 
   function formatTime(ts) {
+    if (!ts) return ''
     const diff = Date.now() - new Date(ts)
     if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`
     if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`
     return new Date(ts).toLocaleDateString()
   }
 
-  function resetForm() { setEmail(''); setPassword(''); setConfirm(''); setError(''); setMessage('') }
+  function resetForm() {
+    setEmail(''); setPassword(''); setConfirm(''); setError(''); setMessage('')
+  }
+
   function openModal(type) { resetForm(); setShowAuth(type) }
 
   async function handleLogin() {
-    setError(''); setLoading(true)
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    setError('')
+    setLoading(true)
+    try {
+      const { data, error: authErr } = await supabase.auth.signInWithPassword({ email, password })
+      if (authErr) { setError(authErr.message); setLoading(false); return }
+      const { data: profile } = await supabase.from('profiles').select('id').eq('id', data.user.id).single()
+      setShowAuth(null)
+      resetForm()
+      router.push(profile ? '/' : '/setup-profile')
+    } catch (e) {
+      setError('Something went wrong. Try again.')
+    }
     setLoading(false)
-    if (error) return setError(error.message)
-    const { data: profile } = await supabase.from('profiles').select('id').eq('id', data.user.id).single()
-    setShowAuth(null); resetForm()
-    router.push(profile ? '/' : '/setup-profile')
   }
 
   async function handleSignup() {
@@ -84,23 +104,32 @@ function HomePageInner() {
     if (password !== confirm) return setError('Passwords do not match.')
     if (password.length < 6) return setError('Password must be at least 6 characters.')
     setLoading(true)
-    const { error } = await supabase.auth.signUp({ email, password })
+    try {
+      const { error: authErr } = await supabase.auth.signUp({ email, password })
+      if (authErr) { setError(authErr.message); setLoading(false); return }
+      setMessage('Check your email to confirm your account, then log in.')
+    } catch (e) {
+      setError('Something went wrong. Try again.')
+    }
     setLoading(false)
-    if (error) return setError(error.message)
-    setMessage('Check your email to confirm your account, then log in.')
   }
 
   async function handleReset() {
-    setError(''); setLoading(true)
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    })
+    setError('')
+    setLoading(true)
+    try {
+      const { error: authErr } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      })
+      if (authErr) { setError(authErr.message); setLoading(false); return }
+      setMessage('Reset link sent — check your email.')
+    } catch (e) {
+      setError('Something went wrong. Try again.')
+    }
     setLoading(false)
-    if (error) return setError(error.message)
-    setMessage('Reset link sent — check your email.')
   }
 
-  // ── ANONYMOUS STATE ──
+  // ── ANONYMOUS ──
   if (!user && !authLoading) {
     return (
       <div className={styles.anonPage}>
@@ -119,16 +148,23 @@ function HomePageInner() {
         <div className={styles.anonCenter}>
           <div className={styles.hero}>
             <p className={styles.eyebrow}>ANONYMOUS · REAL-TIME · FREE</p>
-            <h1 className={styles.headline}>Talk to a<br /><span className={styles.accent}>stranger.</span></h1>
-            <p className={styles.sub}>No account needed. Just click and connect<br />with someone new, anywhere in the world.</p>
+            <h1 className={styles.headline}>
+              Talk to a<br /><span className={styles.accent}>stranger.</span>
+            </h1>
+            <p className={styles.sub}>
+              No account needed. Just click and connect<br />with someone new, anywhere in the world.
+            </p>
             <div className={styles.actions}>
-              <button className={styles.primaryBtn} onClick={() => router.push('/chat')}>Start chatting →</button>
-              <button className={styles.loginBtn} onClick={() => openModal('login')}>LOGIN</button>
+              <button className={styles.primaryBtn} onClick={() => router.push('/chat')}>
+                Start chatting →
+              </button>
+              <button className={styles.loginBtn} onClick={() => openModal('login')}>
+                LOGIN
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Auth modal */}
         {showAuth && (
           <div className={styles.overlay} onClick={() => { setShowAuth(null); router.replace('/') }}>
             <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -187,7 +223,7 @@ function HomePageInner() {
     )
   }
 
-  // ── LOGGED IN STATE ──
+  // ── LOGGED IN ──
   return (
     <AppShell noPadding>
       <div className={styles.loggedPage}>
@@ -195,33 +231,41 @@ function HomePageInner() {
         <div className={styles.blob1} />
         <div className={styles.blob2} />
 
-        {/* Left: Trace rank hero (replaces the old headline) */}
         <div className={styles.loggedLeft}>
           {rank ? (
-            <RankCard
-              rank={rank}
-              nextRank={nextRank}
-              trace={trace}
-              progress={progress}
-              traceToNext={traceToNext}
-              size="hero"
-              animated
-              showLevelUp={!!rankUpEvent}
-              onBadgeClick={() => router.push('/rank')}
-            />
+            <>
+              <RankCard
+                rank={rank}
+                nextRank={nextRank}
+                trace={trace}
+                progress={progress}
+                traceToNext={traceToNext}
+                size="hero"
+                animated
+                showLevelUp={!!rankUpEvent}
+                onBadgeClick={() => router.push('/rank')}
+              />
+              <div className={styles.loggedActions}>
+                <button className={styles.primaryBtn} onClick={() => router.push('/chat')}>
+                  Start chatting →
+                </button>
+              </div>
+            </>
           ) : (
-            <div className={styles.rankLoading} />
+            <div className={styles.hero}>
+              <p className={styles.eyebrow}>ANONYMOUS · REAL-TIME · FREE</p>
+              <h1 className={styles.headline}>
+                Talk to a<br /><span className={styles.accent}>stranger.</span>
+              </h1>
+              <div className={styles.actions}>
+                <button className={styles.primaryBtn} onClick={() => router.push('/chat')}>
+                  Start chatting →
+                </button>
+              </div>
+            </div>
           )}
-
-          {/* Start chatting button still available */}
-          <div className={styles.loggedActions}>
-            <button className={styles.primaryBtn} onClick={() => router.push('/chat')}>
-              Start chatting →
-            </button>
-          </div>
         </div>
 
-        {/* Right: recent messages */}
         <div className={styles.loggedRight}>
           {recentMessages.length > 0 && (
             <>
@@ -234,9 +278,12 @@ function HomePageInner() {
                   const other = getOtherProfile(conv)
                   if (!other) return null
                   return (
-                    <div key={conv.id} className={styles.msgCard} onClick={() => router.push(`/inbox/${conv.id}`)}>
+                    <div key={conv.id} className={styles.msgCard} onClick={() => router.push(`/inbox`)}>
                       <div className={styles.msgAvatar}>
-                        {other.avatar_url ? <img src={other.avatar_url} alt="" className={styles.msgAvatarImg} /> : <span>{other.username[0].toUpperCase()}</span>}
+                        {other.avatar_url
+                          ? <img src={other.avatar_url} alt="" className={styles.msgAvatarImg} />
+                          : <span>{(other.username || '?')[0].toUpperCase()}</span>
+                        }
                       </div>
                       <div className={styles.msgInfo}>
                         <p className={styles.msgUsername}>@{other.username}</p>
@@ -256,7 +303,11 @@ function HomePageInner() {
 }
 
 export default function HomePage() {
-  return <Suspense fallback={null}><HomePageInner /></Suspense>
+  return (
+    <Suspense fallback={null}>
+      <HomePageInner />
+    </Suspense>
+  )
 }
 
 function SearchIcon() {

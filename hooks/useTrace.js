@@ -1,4 +1,3 @@
-// hooks/useTrace.js
 'use client'
 
 import { useEffect, useState, useCallback, useRef } from 'react'
@@ -10,151 +9,126 @@ import { awardSessionTrace } from '../lib/traceService'
 export function useTrace() {
   const { user } = useAuth()
 
-  const [trace, setTrace] = useState(0)
-  const [rank, setRank] = useState(null)
-  const [nextRank, setNextRank] = useState(null)
-  const [progress, setProgress] = useState(0)
+  const [trace, setTrace]           = useState(0)
+  const [rank, setRank]             = useState(null)
+  const [nextRank, setNextRank]     = useState(null)
+  const [progress, setProgress]     = useState(0)
   const [traceToNext, setTraceToNext] = useState(0)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading]       = useState(true)
+  const [traceGain, setTraceGain]   = useState(null)
+  const [rankUpEvent, setRankUpEvent] = useState(null)
 
-  // Animation state
-  const [traceGain, setTraceGain] = useState(null) // { amount, id } for floating animation
-  const [rankUpEvent, setRankUpEvent] = useState(null) // { from, to } for rank up animation
+  const prevTraceRef  = useRef(0)
+  const prevRankRef   = useRef(null)
+  const channelRef    = useRef(null)
+  const mountedRef    = useRef(true)
 
-  const prevTraceRef = useRef(0)
-  const prevRankRef = useRef(null)
-
-  // Load initial trace data
   useEffect(() => {
-    if (!user) { setLoading(false); return }
-    fetchTrace()
-    subscribeToTrace()
-  }, [user])
+    mountedRef.current = true
+    return () => { mountedRef.current = false }
+  }, [])
 
-  async function fetchTrace() {
-    setLoading(true)
-    const { data } = await supabase
-      .from('profiles')
-      .select('trace, rank_name')
-      .eq('id', user.id)
-      .single()
-
-    if (data) {
-      updateLocalState(data.trace, data.rank_name)
-      prevTraceRef.current = data.trace
-      prevRankRef.current = data.rank_name
+  useEffect(() => {
+    if (!user) {
+      setLoading(false)
+      return
     }
-    setLoading(false)
-  }
 
-  function subscribeToTrace() {
-  const channel = supabase
-    .channel(`trace-${user.id}`)
-    .on(
-      'postgres_changes',
-      {
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'profiles',
-        filter: `id=eq.${user.id}`,
-      },
-      (payload) => {
-        const newTrace = payload.new.trace
-        const newRankName = payload.new.rank_name
+    let cancelled = false
 
-        const gained = newTrace - prevTraceRef.current
-        if (gained > 0.01) {
-          triggerGainAnimation(gained)
-        }
+    async function init() {
+      setLoading(true)
 
-        if (prevRankRef.current && newRankName !== prevRankRef.current) {
-          setRankUpEvent({ from: prevRankRef.current, to: newRankName })
-          setTimeout(() => setRankUpEvent(null), 4000)
-        }
+      // Fetch current trace
+      const { data } = await supabase
+        .from('profiles')
+        .select('trace, rank_name')
+        .eq('id', user.id)
+        .single()
 
-        prevTraceRef.current = newTrace
-        prevRankRef.current = newRankName
-        updateLocalState(newTrace, newRankName)
+      if (!cancelled && data) {
+        const t = Number(data.trace) || 0
+        prevTraceRef.current = t
+        prevRankRef.current = data.rank_name
+        updateLocalState(t, data.rank_name)
       }
-    )
-    .subscribe()
 
-  return () => channel.unsubscribe()
-}function subscribeToTrace() {
-  const channel = supabase
-    .channel(`trace-${user.id}`)
-    .on(
-      'postgres_changes',
-      {
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'profiles',
-        filter: `id=eq.${user.id}`,
-      },
-      (payload) => {
-        const newTrace = payload.new.trace
-        const newRankName = payload.new.rank_name
+      if (!cancelled) setLoading(false)
 
-        const gained = newTrace - prevTraceRef.current
-        if (gained > 0.01) {
-          triggerGainAnimation(gained)
+      // Subscribe AFTER fetch — build channel first, then subscribe once
+      if (!cancelled) {
+        // Clean up any old channel first
+        if (channelRef.current) {
+          await supabase.removeChannel(channelRef.current)
+          channelRef.current = null
         }
 
-        if (prevRankRef.current && newRankName !== prevRankRef.current) {
-          setRankUpEvent({ from: prevRankRef.current, to: newRankName })
-          setTimeout(() => setRankUpEvent(null), 4000)
-        }
+        const ch = supabase.channel(`trace-user-${user.id}`)
 
-        prevTraceRef.current = newTrace
-        prevRankRef.current = newRankName
-        updateLocalState(newTrace, newRankName)
+        ch.on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'profiles',
+            filter: `id=eq.${user.id}`,
+          },
+          (payload) => {
+            if (!mountedRef.current) return
+            const newTrace = Number(payload.new.trace) || 0
+            const newRankName = payload.new.rank_name
+
+            const gained = newTrace - prevTraceRef.current
+            if (gained > 0.01) {
+              const id = Date.now()
+              setTraceGain({ amount: parseFloat(gained.toFixed(2)), id })
+              setTimeout(() => { if (mountedRef.current) setTraceGain(null) }, 2500)
+            }
+
+            if (prevRankRef.current && newRankName !== prevRankRef.current) {
+              setRankUpEvent({ from: prevRankRef.current, to: newRankName })
+              setTimeout(() => { if (mountedRef.current) setRankUpEvent(null) }, 4000)
+            }
+
+            prevTraceRef.current = newTrace
+            prevRankRef.current = newRankName
+            updateLocalState(newTrace, newRankName)
+          }
+        )
+
+        ch.subscribe()
+        channelRef.current = ch
       }
-    )
-    .subscribe()
+    }
 
-  return () => channel.unsubscribe()
-}
+    init()
+
+    return () => {
+      cancelled = true
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current)
+        channelRef.current = null
+      }
+    }
+  }, [user?.id])
 
   function updateLocalState(traceValue, rankName) {
     const t = Number(traceValue) || 0
-    const r = getRank(t)
-    const nr = getNextRank(r.name)
-    const p = getRankProgress(t)
-    const tn = getTraceToNextRank(t)
-
     setTrace(t)
-    setRank(r)
-    setNextRank(nr)
-    setProgress(p)
-    setTraceToNext(tn)
+    setRank(getRank(t))
+    setNextRank(getNextRank(getRank(t).name))
+    setProgress(getRankProgress(t))
+    setTraceToNext(getTraceToNextRank(t))
   }
 
-  function triggerGainAnimation(amount) {
-    const id = Date.now()
-    setTraceGain({ amount: parseFloat(amount.toFixed(2)), id })
-    setTimeout(() => setTraceGain(null), 2500)
-  }
-
-  // Award trace from a completed session
   const awardTrace = useCallback(async (sessionData) => {
     if (!user) return null
-    const result = await awardSessionTrace({
-      userId: user.id,
-      ...sessionData,
-    })
-    return result
-  }, [user])
+    return awardSessionTrace({ userId: user.id, ...sessionData })
+  }, [user?.id])
 
   return {
-    trace,
-    rank,
-    nextRank,
-    progress,
-    traceToNext,
-    loading,
-    traceGain,      // for floating animation
-    rankUpEvent,    // for rank up animation
-    awardTrace,     // call this when session ends
-    refetch: fetchTrace,
+    trace, rank, nextRank, progress, traceToNext,
+    loading, traceGain, rankUpEvent, awardTrace,
+    refetch: () => {},
   }
 }

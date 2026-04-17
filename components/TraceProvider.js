@@ -1,4 +1,3 @@
-// components/TraceProvider.js
 'use client'
 
 import { createContext, useContext } from 'react'
@@ -6,7 +5,18 @@ import { useTrace } from '../hooks/useTrace'
 import TraceGainFloat from './animations/TraceGainFloat'
 import RankUpBanner from './animations/RankUpBanner'
 
-const TraceContext = createContext(null)
+const TraceContext = createContext({
+  trace: 0,
+  rank: null,
+  nextRank: null,
+  progress: 0,
+  traceToNext: 0,
+  loading: true,
+  traceGain: null,
+  rankUpEvent: null,
+  awardTrace: async () => null,
+  refetch: () => {},
+})
 
 export function TraceProvider({ children }) {
   const traceData = useTrace()
@@ -14,16 +24,13 @@ export function TraceProvider({ children }) {
   return (
     <TraceContext.Provider value={traceData}>
       {children}
-      {/* Global animations that can trigger from anywhere */}
       <TraceGainFloat traceGain={traceData.traceGain} />
       <RankUpBanner rankUpEvent={traceData.rankUpEvent} />
     </TraceContext.Provider>
   )
 }
 
-// Hook: use anywhere in the app
+// Safe hook — never throws, returns defaults if outside provider
 export function useTraceContext() {
-  const ctx = useContext(TraceContext)
-  if (!ctx) throw new Error('useTraceContext must be used inside TraceProvider')
-  return ctx
+  return useContext(TraceContext)
 }

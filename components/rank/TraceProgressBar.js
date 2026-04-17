@@ -1,15 +1,8 @@
-// components/rank/TraceProgressBar.js
 'use client'
 
 import { useEffect, useRef } from 'react'
 import styles from './TraceProgressBar.module.css'
 
-// progress: 0–100
-// rank: current rank object
-// nextRank: next rank object (null if max)
-// trace: current trace value
-// traceToNext: how much more needed
-// size: 'compact' | 'full'
 export default function TraceProgressBar({
   progress = 0,
   rank,
@@ -23,16 +16,17 @@ export default function TraceProgressBar({
 
   useEffect(() => {
     if (!fillRef.current) return
-    // Smooth animate to new progress
-    fillRef.current.style.width = `${Math.min(Math.max(progress, 0), 100)}%`
+    const pct = Math.min(Math.max(Number(progress) || 0, 0), 100)
+    fillRef.current.style.width = `${pct}%`
   }, [progress])
 
   if (!rank) return null
 
   const isMaxRank = !nextRank
+  const pct = Math.min(Math.max(Number(progress) || 0, 0), 100)
 
   return (
-    <div className={`${styles.wrap} ${styles[size]}`}>
+    <div className={`${styles.wrap} ${styles[size] || styles.full}`}>
       {size === 'full' && (
         <div className={styles.labels}>
           <span className={styles.currentLabel} style={{ color: rank.color }}>
@@ -43,9 +37,7 @@ export default function TraceProgressBar({
               {nextRank.name}
             </span>
           )}
-          {isMaxRank && (
-            <span className={styles.maxLabel}>Max rank</span>
-          )}
+          {isMaxRank && <span className={styles.maxLabel}>Max rank</span>}
         </div>
       )}
 
@@ -55,27 +47,20 @@ export default function TraceProgressBar({
           className={`${styles.fill} ${animated ? styles.fillAnimated : ''}`}
           style={{
             '--rank-color': rank.color,
-            '--rank-glow': rank.glowColor,
-            width: `${Math.min(Math.max(progress, 0), 100)}%`,
+            '--rank-glow': rank.glowColor || 'transparent',
+            width: `${pct}%`,
           }}
         />
-        {/* Shimmer effect */}
         <div className={styles.shimmer} />
       </div>
 
       {size === 'full' && (
         <div className={styles.stats}>
-          <span className={styles.traceVal}>
-            {formatTrace(trace)} Trace
-          </span>
+          <span className={styles.traceVal}>{formatTrace(trace)} Trace</span>
           {!isMaxRank && (
-            <span className={styles.toNext}>
-              {formatTrace(traceToNext)} to {nextRank.name}
-            </span>
+            <span className={styles.toNext}>{formatTrace(traceToNext)} to {nextRank.name}</span>
           )}
-          {isMaxRank && (
-            <span className={styles.toNext}>Inevitable.</span>
-          )}
+          {isMaxRank && <span className={styles.toNext}>Inevitable.</span>}
         </div>
       )}
     </div>

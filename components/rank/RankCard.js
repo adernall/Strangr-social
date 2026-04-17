@@ -1,18 +1,15 @@
-// components/rank/RankCard.js
 'use client'
 
 import HexBadge from '../badges/HexBadge'
 import TraceProgressBar from './TraceProgressBar'
 import styles from './RankCard.module.css'
 
-// size: 'compact' | 'full' | 'hero'
-// hero = the large display on homepage replacing the "Talk to a stranger" section
 export default function RankCard({
   rank,
   nextRank,
-  trace,
-  progress,
-  traceToNext,
+  trace = 0,
+  progress = 0,
+  traceToNext = 0,
   size = 'full',
   animated = true,
   showLevelUp = false,
@@ -57,7 +54,6 @@ export default function RankCard({
             </div>
           )}
         </div>
-
         <div className={styles.heroInfo}>
           <p className={styles.heroRankLabel}>YOUR RANK</p>
           <h2 className={styles.heroRankName} style={{ color: rank.color }}>

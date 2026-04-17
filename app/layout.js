@@ -1,7 +1,3 @@
-// app/layout.js
-// REPLACE your existing layout.js with this.
-// Adds TraceProvider so trace is available on every page.
-
 import { Outfit } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '../lib/AuthContext'

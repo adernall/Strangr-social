@@ -1,0 +1,97 @@
+/* components/admin/AdminTopBar.module.css */
+.topbar {
+  height: 60px;
+  background: #fff;
+  border-bottom: 1px solid #e8eaed;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  font-family: var(--font-outfit), sans-serif;
+}
+
+.searchWrap {
+  flex: 1;
+  max-width: 480px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.875rem;
+  color: #9ca3af;
+  display: flex;
+}
+
+.searchInput {
+  width: 100%;
+  height: 38px;
+  background: #f3f4f6;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0 1rem 0 2.5rem;
+  font-size: 13px;
+  color: #111827;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.searchInput::placeholder { color: #9ca3af; }
+.searchInput:focus {
+  background: #fff;
+  border-color: #93c5fd;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.iconWrap { position: relative; }
+
+.iconBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: none;
+  border: none;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.15s, color 0.15s;
+}
+
+.iconBtn:hover { background: #f3f4f6; color: #111827; }
+
+.notifDot {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ef4444;
+  border: 1.5px solid #fff;
+}
+
+.adminBadge {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2563eb;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 0.35rem 0.875rem;
+  border-radius: 8px;
+  white-space: nowrap;
+}

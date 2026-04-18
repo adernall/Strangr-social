@@ -1,0 +1,272 @@
+/* app/admin-secret-dashboard/home.module.css */
+.pageTitle {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.35rem;
+}
+
+.pageSub {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+/* Stat grid */
+.statGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.statCard {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  cursor: pointer;
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.statCard:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  transform: translateY(-1px);
+}
+
+.statLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #9ca3af;
+  margin-bottom: 0.5rem;
+}
+
+.statValue {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.03em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.statDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #22c55e;
+  flex-shrink: 0;
+}
+
+.statSub {
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 0.35rem;
+}
+
+/* Charts row */
+.chartsRow {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.chartCard, .healthCard, .logCard {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.chartHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.chartTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.chartToggle {
+  display: flex;
+  gap: 4px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.toggleBtn {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  background: none;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s, color 0.15s;
+}
+
+.toggleActive {
+  background: #fff;
+  color: #111827;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Bar chart */
+.barChart {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 160px;
+}
+
+.barCol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.bar {
+  width: 100%;
+  background: #2563eb;
+  border-radius: 4px 4px 0 0;
+  min-height: 8px;
+  transition: opacity 0.2s;
+}
+
+.barCol:hover .bar { opacity: 0.75; }
+
+.barLabel {
+  font-size: 11px;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+/* Health */
+.allGreenBadge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #16a34a;
+  background: #dcfce7;
+  border: 1px solid #bbf7d0;
+  padding: 3px 10px;
+  border-radius: 100px;
+}
+
+.healthList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.healthItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.healthLabel { font-size: 13px; color: #374151; font-weight: 500; }
+
+.healthRight {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.healthBar {
+  width: 80px;
+  height: 5px;
+  background: #e5e7eb;
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.healthFill { height: 100%; border-radius: 100px; }
+
+.healthValue { font-size: 12px; font-weight: 600; min-width: 48px; text-align: right; }
+
+.quickStats {
+  display: flex;
+  gap: 0;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 1rem;
+}
+
+.quickStat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.quickStat:hover { background: #f9fafb; }
+
+.quickStatNum { font-size: 1.35rem; font-weight: 800; }
+.quickStatLabel { font-size: 11px; color: #9ca3af; font-weight: 500; }
+
+/* Log */
+.logCard { margin-bottom: 0; }
+
+.viewAllBtn {
+  font-size: 13px;
+  color: #2563eb;
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.emptyLog { font-size: 13px; color: #9ca3af; text-align: center; padding: 1.5rem; }
+
+.logList { display: flex; flex-direction: column; gap: 0; }
+
+.logRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  padding: 0.875rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.logRow:last-child { border-bottom: none; }
+
+.logDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.logInfo { flex: 1; }
+
+.logText { font-size: 13px; color: #374151; line-height: 1.5; }
+
+.logTime { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+
+@media (max-width: 1200px) {
+  .statGrid { grid-template-columns: repeat(2, 1fr); }
+  .chartsRow { grid-template-columns: 1fr; }
+}

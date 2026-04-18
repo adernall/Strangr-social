@@ -1,0 +1,169 @@
+/* app/admin-secret-dashboard/analytics/analytics.module.css */
+.pageTitle { font-size: 2rem; font-weight: 800; color: #111827; letter-spacing: -0.03em; margin-bottom: 0.35rem; }
+.pageSub { font-size: 14px; color: #6b7280; margin-bottom: 2rem; }
+
+.statGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+
+.statCard {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+.statCard:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.07); transform: translateY(-1px); }
+
+.statLabel { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: #9ca3af; margin-bottom: 0.5rem; }
+.statValue { font-size: 1.85rem; font-weight: 800; color: #111827; margin-bottom: 0.35rem; }
+.statSub { font-size: 12px; font-weight: 500; }
+
+.chartsRow { display: grid; grid-template-columns: 1fr 280px; gap: 1rem; margin-bottom: 1.5rem; }
+
+.chartCard, .activityCard, .topUsersCard {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.chartHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.chartTitle { font-size: 15px; font-weight: 700; color: #111827; }
+
+.chartToggle { display: flex; gap: 4px; background: #f3f4f6; border-radius: 8px; padding: 3px; }
+
+.toggleBtn {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  background: none;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.toggleActive { background: #fff; color: #111827; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+.barChart {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 160px;
+}
+
+.barCol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.bar {
+  width: 100%;
+  background: #2563eb;
+  border-radius: 4px 4px 0 0;
+  min-height: 8px;
+  transition: opacity 0.2s;
+}
+
+.barCol:hover .bar { opacity: 0.75; }
+.barLabel { font-size: 11px; color: #9ca3af; font-weight: 500; }
+
+/* Activity card */
+.engagementCircle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 8px solid #dbeafe;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+}
+
+.engagementNum { font-size: 1.35rem; font-weight: 800; color: #111827; }
+.engagementLabel { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; color: #9ca3af; }
+
+.activityBreakdown { display: flex; flex-direction: column; gap: 0.625rem; }
+
+.activityRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0;
+}
+
+.activityDot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.activityLabel { flex: 1; font-size: 13px; color: #374151; }
+.activityVal { font-size: 13px; font-weight: 700; color: #111827; }
+
+/* Top users */
+.topUsersCard { }
+
+.viewAllBtn {
+  font-size: 13px;
+  color: #2563eb;
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.topUsersList { display: flex; flex-direction: column; gap: 0; }
+
+.topUserRow {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f3f4f6;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.topUserRow:last-child { border-bottom: none; }
+.topUserRow:hover { background: #f9fafb; padding: 0.75rem 0.5rem; }
+
+.topUserRank { font-size: 13px; font-weight: 700; min-width: 28px; }
+
+.topUserAvatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #dbeafe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #2563eb;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.topUserAvatarImg { width: 100%; height: 100%; object-fit: cover; }
+
+.topUserInfo { flex: 1; }
+.topUserName { font-size: 13px; font-weight: 600; color: #111827; }
+.topUserRankName { font-size: 11px; color: #9ca3af; }
+.topUserTrace { font-size: 13px; font-weight: 700; color: #6b7280; }
+
+.empty { text-align: center; padding: 2rem; color: #9ca3af; font-size: 14px; }
+
+@media (max-width: 1100px) {
+  .statGrid { grid-template-columns: repeat(2, 1fr); }
+  .chartsRow { grid-template-columns: 1fr; }
+}

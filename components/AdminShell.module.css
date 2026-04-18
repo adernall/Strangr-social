@@ -1,0 +1,37 @@
+/* components/admin/AdminShell.module.css */
+.shell {
+  display: flex;
+  min-height: 100vh;
+  background: #f3f4f6;
+  font-family: var(--font-outfit), sans-serif;
+}
+
+.main {
+  flex: 1;
+  margin-left: 220px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+  padding: 2rem 2.5rem;
+}
+
+/* Shared admin page styles */
+:global(.admin-page-title) {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.35rem;
+}
+
+:global(.admin-page-sub) {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  max-width: 600px;
+}

@@ -1,7 +1,7 @@
 'use client'
 
-import { useAdminGate } from '../../../../lib/useAdminGate'
-import AdminShell from '../../../../components/admin/AdminShell'
+import { useAdminGate } from '../../../lib/useAdminGate'
+import AdminShell from '../../../components/admin/AdminShell'
 import styles from './jobs.module.css'
 
 export default function JobsPage() {

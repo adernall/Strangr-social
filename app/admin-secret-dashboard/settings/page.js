@@ -2,9 +2,9 @@
 
 import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '../../../../lib/supabase'
-import { useAdminGate } from '../../../../lib/useAdminGate'
-import AdminShell from '../../../../components/admin/AdminShell'
+import { supabase } from '../../../lib/supabase'
+import { useAdminGate } from '../../../lib/useAdminGate'
+import AdminShell from '../../../components/admin/AdminShell'
 import styles from './settings.module.css'
 
 export default function SettingsPage() {

@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { supabase } from '../../../lib/supabase'
 import { useAuth } from '../../../lib/AuthContext'
 import { joinSpace, getMemberRole } from '../../../lib/feedEngine'
-import AppShell from '../../../components/AppShell'
+import AppShell from '../../../../components/AppShell'
 import styles from './join.module.css'
 
 export default function JoinSpacePage() {

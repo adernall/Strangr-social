@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '../../lib/supabase'
-import { useAuth } from '../../lib/AuthContext'
-import { fetchUserSpaces } from '../../lib/feedEngine'
+import { supabase } from '../lib/supabase'
+import { useAuth } from '../lib/AuthContext'
+import { fetchUserSpaces } from '../lib/feedEngine'
 import styles from './QuickPost.module.css'
 
 export default function QuickPost({ onClose }) {

@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { supabase } from '../../../lib/supabase'
-import { useAuth } from '../../../lib/AuthContext'
-import { joinSpace, getMemberRole } from '../../../lib/feedEngine'
+import { supabase } from '../../../../lib/supabase'
+import { useAuth } from '../../../../lib/AuthContext'
+import { joinSpace, getMemberRole } from '../../../../lib/feedEngine'
 import AppShell from '../../../../components/AppShell'
 import styles from './join.module.css'
 

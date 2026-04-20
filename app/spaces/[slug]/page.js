@@ -1,43 +1,47 @@
 'use client'
 
-import { supabase } from '../../../lib/supabase'
-import { useAuth } from '../../../lib/AuthContext'
+import { useEffect, useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import { supabase } from '../../../../lib/supabase'
+import { useAuth } from '../../../../lib/AuthContext'
 import {
   fetchSpace, fetchSpacePosts, fetchSpaceMembers,
   getMemberRole, joinSpace, leaveSpace, formatPostTime
-} from '../../../lib/feedEngine'
-import AppShell from '../../../components/AppShell'
-import PostCard from '../../../components/posts/PostCard'
+} from '../../../../lib/feedEngine'
+import AppShell from '../../../../components/AppShell'
+import PostCard from '../../../../components/posts/PostCard'
 import styles from './space.module.css'
 
 export default function SpacePage() {
-  const { spaceId } = useParams()
-  const { user } = useAuth()
-  const router = useRouter()
+  const { slug }  = useParams()
+  const { user }  = useAuth()
+  const router    = useRouter()
 
-  const [space, setSpace]       = useState(null)
-  const [posts, setPosts]       = useState([])
-  const [members, setMembers]   = useState([])
-  const [myRole, setMyRole]     = useState(null)
-  const [loading, setLoading]   = useState(true)
-  const [joining, setJoining]   = useState(false)
-  const [tab, setTab]           = useState('posts') // 'posts' | 'members' | 'about'
+  const [space, setSpace]     = useState(null)
+  const [posts, setPosts]     = useState([])
+  const [members, setMembers] = useState([])
+  const [myRole, setMyRole]   = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [joining, setJoining] = useState(false)
+  const [tab, setTab]         = useState('posts')
 
-  useEffect(() => {
-    loadAll()
-  }, [spaceId, user])
+  useEffect(() => { loadAll() }, [slug, user])
 
   async function loadAll() {
     setLoading(true)
-    const [spaceData, postsData, membersData] = await Promise.all([
-      fetchSpace(spaceId),
-      fetchSpacePosts(spaceId),
-      fetchSpaceMembers(spaceId),
+    const spaceData = await fetchSpace(slug)
+    if (!spaceData) { setLoading(false); return }
+
+    const [postsData, membersData] = await Promise.all([
+      fetchSpacePosts(spaceData.id),
+      fetchSpaceMembers(spaceData.id),
     ])
+
     setSpace(spaceData)
     setPosts(postsData)
     setMembers(membersData)
-    if (user && spaceData) {
+
+    if (user) {
       const role = await getMemberRole(spaceData.id, user.id)
       setMyRole(role)
     }
@@ -48,7 +52,6 @@ export default function SpacePage() {
     if (!user) return router.push('/?auth=login')
     setJoining(true)
     if (space.is_private) {
-      // Send join request
       await supabase.from('space_requests').upsert({ space_id: space.id, user_id: user.id })
       alert('Join request sent. Wait for approval.')
     } else {
@@ -76,7 +79,7 @@ export default function SpacePage() {
     <AppShell>
       <div className={styles.notFound}>
         <p>Space not found.</p>
-        <button onClick={() => router.push('/')}>Go home</button>
+        <button onClick={() => router.push('/feed')}>Browse Feed</button>
       </div>
     </AppShell>
   )
@@ -87,13 +90,11 @@ export default function SpacePage() {
   return (
     <AppShell>
       <div className={styles.page}>
-        {/* Banner */}
         <div
           className={styles.banner}
           style={space.banner_url ? { backgroundImage: `url(${space.banner_url})` } : {}}
         />
 
-        {/* Header */}
         <div className={styles.header}>
           <div className={styles.headerLeft}>
             <div className={styles.spaceIcon}>
@@ -105,14 +106,14 @@ export default function SpacePage() {
             <div>
               <h1 className={styles.spaceName}>{space.name}</h1>
               <p className={styles.spaceMeta}>
-                {space.member_count.toLocaleString()} members · {space.post_count} posts
+                {(space.member_count || 0).toLocaleString()} members · {space.post_count || 0} posts
                 {space.is_private && ' · 🔒 Private'}
               </p>
             </div>
           </div>
           <div className={styles.headerRight}>
             {isManager && (
-              <button className={styles.settingsBtn} onClick={() => router.push(`/spaces/${spaceId}/settings`)}>
+              <button className={styles.settingsBtn} onClick={() => router.push(`/spaces/${slug}/settings`)}>
                 ⚙ Manage
               </button>
             )}
@@ -126,7 +127,7 @@ export default function SpacePage() {
             {isMember && (
               <button
                 className={styles.postBtn}
-                onClick={() => router.push(`/spaces/${spaceId}/posts/create`)}
+                onClick={() => router.push(`/spaces/${slug}/posts/create`)}
               >
                 + Post
               </button>
@@ -134,7 +135,6 @@ export default function SpacePage() {
           </div>
         </div>
 
-        {/* Tags */}
         {space.tags?.length > 0 && (
           <div className={styles.tags}>
             {space.tags.map((tag) => (
@@ -143,7 +143,6 @@ export default function SpacePage() {
           </div>
         )}
 
-        {/* Tabs */}
         <div className={styles.tabs}>
           {['posts', 'members', 'about'].map((t) => (
             <button
@@ -158,14 +157,13 @@ export default function SpacePage() {
           ))}
         </div>
 
-        {/* Posts tab */}
         {tab === 'posts' && (
           <div className={styles.postsGrid}>
             {posts.length === 0 ? (
               <div className={styles.empty}>
                 <p>No posts yet.</p>
                 {isMember && (
-                  <button className={styles.firstPostBtn} onClick={() => router.push(`/spaces/${spaceId}/posts/create`)}>
+                  <button className={styles.firstPostBtn} onClick={() => router.push(`/spaces/${slug}/posts/create`)}>
                     Be the first to post →
                   </button>
                 )}
@@ -178,7 +176,6 @@ export default function SpacePage() {
           </div>
         )}
 
-        {/* Members tab */}
         {tab === 'members' && (
           <div className={styles.membersList}>
             {members.map((m) => (
@@ -203,19 +200,13 @@ export default function SpacePage() {
                   </span>
                 )}
                 {isManager && m.user?.id !== user?.id && (
-                  <MemberActions
-                    member={m}
-                    spaceId={space.id}
-                    adminId={user?.id}
-                    onRefresh={loadAll}
-                  />
+                  <MemberActions member={m} spaceId={space.id} onRefresh={loadAll} />
                 )}
               </div>
             ))}
           </div>
         )}
 
-        {/* About tab */}
         {tab === 'about' && (
           <div className={styles.aboutSection}>
             {space.description && (
@@ -232,10 +223,7 @@ export default function SpacePage() {
             )}
             <div className={styles.aboutBlock}>
               <p className={styles.aboutLabel}>CREATED BY</p>
-              <div
-                className={styles.creatorRow}
-                onClick={() => router.push(`/profile/${space.creator?.username}`)}
-              >
+              <div className={styles.creatorRow} onClick={() => router.push(`/profile/${space.creator?.username}`)}>
                 <div className={styles.memberAvatar}>
                   {space.creator?.avatar_url
                     ? <img src={space.creator.avatar_url} alt="" className={styles.memberAvatarImg} />
@@ -250,11 +238,11 @@ export default function SpacePage() {
                 <p className={styles.aboutLabel}>INVITE LINK</p>
                 <div className={styles.inviteRow}>
                   <code className={styles.inviteLink}>
-                    {typeof window !== 'undefined' ? `${window.location.origin}/spaces/join/${space.invite_token}` : ''}
+                    {`https://strangr-social.onrender.com/spaces/join/${space.invite_token}`}
                   </code>
                   <button
                     className={styles.copyBtn}
-                    onClick={() => navigator.clipboard.writeText(`${window.location.origin}/spaces/join/${space.invite_token}`)}
+                    onClick={() => navigator.clipboard.writeText(`https://strangr-social.onrender.com/spaces/join/${space.invite_token}`)}
                   >
                     Copy
                   </button>
@@ -268,47 +256,29 @@ export default function SpacePage() {
   )
 }
 
-function MemberActions({ member, spaceId, adminId, onRefresh }) {
+function MemberActions({ member, spaceId, onRefresh }) {
   const [open, setOpen] = useState(false)
 
   async function makeAdmin() {
-    await supabase.from('space_members')
-      .update({ role: 'admin' })
-      .eq('space_id', spaceId)
-      .eq('user_id', member.user?.id)
-    setOpen(false)
-    onRefresh()
+    await supabase.from('space_members').update({ role: 'admin' }).eq('space_id', spaceId).eq('user_id', member.user?.id)
+    setOpen(false); onRefresh()
   }
-
   async function removeAdmin() {
-    await supabase.from('space_members')
-      .update({ role: 'member' })
-      .eq('space_id', spaceId)
-      .eq('user_id', member.user?.id)
-    setOpen(false)
-    onRefresh()
+    await supabase.from('space_members').update({ role: 'member' }).eq('space_id', spaceId).eq('user_id', member.user?.id)
+    setOpen(false); onRefresh()
   }
-
   async function removeMember() {
-    await supabase.from('space_members')
-      .delete()
-      .eq('space_id', spaceId)
-      .eq('user_id', member.user?.id)
-    setOpen(false)
-    onRefresh()
+    await supabase.from('space_members').delete().eq('space_id', spaceId).eq('user_id', member.user?.id)
+    setOpen(false); onRefresh()
   }
 
   return (
     <div className={styles.memberActionsWrap}>
-      <button className={styles.memberActionDot} onClick={() => setOpen(!open)}>⋮</button>
+      <button className={styles.memberActionDot} onClick={(e) => { e.stopPropagation(); setOpen(!open) }}>⋮</button>
       {open && (
         <div className={styles.memberDropdown}>
-          {member.role === 'member' && (
-            <button className={styles.memberDropItem} onClick={makeAdmin}>Make Admin</button>
-          )}
-          {member.role === 'admin' && (
-            <button className={styles.memberDropItem} onClick={removeAdmin}>Remove Admin</button>
-          )}
+          {member.role === 'member' && <button className={styles.memberDropItem} onClick={makeAdmin}>Make Admin</button>}
+          {member.role === 'admin' && <button className={styles.memberDropItem} onClick={removeAdmin}>Remove Admin</button>}
           <button className={styles.memberDropItemDanger} onClick={removeMember}>Remove from Space</button>
         </div>
       )}

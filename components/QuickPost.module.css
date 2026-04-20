@@ -1,0 +1,331 @@
+/* components/QuickPost.module.css */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  animation: fadeIn 0.18s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal {
+  background: #0f0f1c;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 18px;
+  width: 100%;
+  max-width: 480px;
+  overflow: hidden;
+  animation: slideUp 0.22s ease;
+  font-family: var(--font-outfit), sans-serif;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Header */
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.25rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.modalTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #f0f0f5;
+  flex: 1;
+  text-align: center;
+}
+
+.backStepBtn {
+  font-size: 13px;
+  color: rgba(240,240,245,0.45);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.2s;
+  min-width: 50px;
+}
+
+.backStepBtn:hover { color: #f0f0f5; }
+
+.closeBtn {
+  font-size: 14px;
+  color: rgba(240,240,245,0.35);
+  background: none;
+  border: none;
+  cursor: pointer;
+  min-width: 28px;
+  text-align: right;
+  transition: color 0.2s;
+}
+.closeBtn:hover { color: #f0f0f5; }
+
+/* Login prompt */
+.loginPrompt {
+  font-size: 14px;
+  color: rgba(240,240,245,0.55);
+  text-align: center;
+  padding: 1.5rem 1.5rem 1rem;
+}
+
+.loginBtn {
+  display: block;
+  width: calc(100% - 3rem);
+  margin: 0 1.5rem 1.5rem;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: #6c63ff;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* Space picker */
+.spacePicker { }
+
+.noSpaces {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
+.noSpaces p { font-size: 14px; color: rgba(240,240,245,0.4); }
+
+.createSpaceBtn {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: #6c63ff;
+  border: none;
+  padding: 0.65rem 1.5rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  width: 100%;
+  transition: opacity 0.2s;
+}
+.createSpaceBtn:hover { opacity: 0.87; }
+
+.browseFeedBtn {
+  font-size: 13px;
+  color: rgba(240,240,245,0.5);
+  background: none;
+  border: 1px solid rgba(255,255,255,0.09);
+  padding: 0.6rem 1.5rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  width: 100%;
+}
+
+.spaceList {
+  display: flex;
+  flex-direction: column;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 0.5rem 0;
+}
+
+.spaceList::-webkit-scrollbar { width: 3px; }
+.spaceList::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
+
+.spaceRow {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.875rem 1.25rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.spaceRow:hover { background: rgba(255,255,255,0.04); }
+.spaceRowSelected { background: rgba(108,99,255,0.08) !important; }
+
+.spaceIcon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: rgba(108,99,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700; color: #6c63ff;
+  overflow: hidden; flex-shrink: 0;
+}
+
+.spaceIconImg { width: 100%; height: 100%; object-fit: cover; }
+
+.spaceInfo { flex: 1; }
+.spaceName { font-size: 14px; font-weight: 500; color: #f0f0f5; }
+.spaceMeta { font-size: 11px; color: rgba(240,240,245,0.35); margin-top: 1px; }
+
+.selectArrow { font-size: 16px; color: rgba(240,240,245,0.25); }
+
+.newSpaceRow {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.875rem 1.25rem;
+  cursor: pointer;
+  background: none;
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  width: 100%;
+  font-family: inherit;
+  font-size: 14px;
+  color: rgba(108,99,255,0.7);
+  transition: background 0.15s;
+  margin-top: 4px;
+}
+
+.newSpaceRow:hover { background: rgba(108,99,255,0.06); }
+
+.newSpacePlus {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: rgba(108,99,255,0.1);
+  border: 1px dashed rgba(108,99,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.25rem; color: #6c63ff; flex-shrink: 0;
+}
+
+/* Write step */
+.writeStep {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+.selectedSpaceChip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(108,99,255,0.1);
+  border: 1px solid rgba(108,99,255,0.2);
+  border-radius: 100px;
+  padding: 4px 12px 4px 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(240,240,245,0.8);
+  width: fit-content;
+}
+
+.spaceIconSmall {
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  background: rgba(108,99,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: #6c63ff;
+  overflow: hidden; flex-shrink: 0;
+}
+
+.contentArea {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 0.875rem 1rem;
+  font-size: 15px;
+  color: #f0f0f5;
+  font-family: inherit;
+  outline: none;
+  resize: none;
+  transition: border-color 0.2s;
+  line-height: 1.6;
+}
+
+.contentArea::placeholder { color: rgba(240,240,245,0.25); }
+.contentArea:focus { border-color: rgba(108,99,255,0.45); }
+
+.imgPreviewWrap { position: relative; }
+.imgPreview { width: 100%; max-height: 200px; border-radius: 10px; object-fit: cover; display: block; }
+.removeImg {
+  position: absolute; top: 6px; right: 6px;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: rgba(0,0,0,0.6); border: none; color: #fff;
+  font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+
+.tagWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 9px;
+  padding: 0.5rem;
+  min-height: 40px;
+  align-items: center;
+}
+
+.tagPill {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 12px; color: #6c63ff;
+  background: rgba(108,99,255,0.15); border: 1px solid rgba(108,99,255,0.3);
+  padding: 2px 8px; border-radius: 100px;
+}
+
+.tagX { background: none; border: none; color: rgba(108,99,255,0.6); cursor: pointer; font-size: 10px; padding: 0; }
+
+.tagInput {
+  background: none; border: none; color: #f0f0f5;
+  font-size: 13px; font-family: inherit; outline: none;
+  flex: 1; min-width: 80px;
+}
+.tagInput::placeholder { color: rgba(240,240,245,0.2); }
+
+.error {
+  font-size: 13px; color: #ff6b6b;
+  background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.2);
+  border-radius: 8px; padding: 0.55rem 0.875rem;
+}
+
+.writeFooter {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.imgBtn {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+  color: rgba(240,240,245,0.45); display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+}
+.imgBtn:hover { background: rgba(255,255,255,0.09); color: #f0f0f5; }
+
+.charCount {
+  flex: 1;
+  font-size: 11px;
+  color: rgba(240,240,245,0.25);
+  text-align: right;
+}
+
+.postBtn {
+  font-size: 14px; font-weight: 600; color: #fff; background: #6c63ff;
+  border: none; padding: 0.65rem 1.5rem; border-radius: 10px;
+  cursor: pointer; font-family: inherit; transition: opacity 0.2s; flex-shrink: 0;
+}
+.postBtn:hover:not(:disabled) { opacity: 0.87; }
+.postBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+@media (max-width: 600px) {
+  .modal { border-radius: 16px 16px 0 0; margin-top: auto; }
+  .overlay { align-items: flex-end; padding: 0; }
+}

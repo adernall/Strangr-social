@@ -11,7 +11,7 @@ import styles from './settings.module.css'
 const SUGGESTED_TAGS = ['tech','art','gaming','music','science','sports','movies','food','travel','design','crypto','anime']
 
 export default function SpaceSettingsPage() {
-  const { spaceId } = useParams()
+  const { slug } = useParams()
   const { user }    = useAuth()
   const router      = useRouter()
 
@@ -36,10 +36,10 @@ export default function SpaceSettingsPage() {
   useEffect(() => { loadSpace() }, [spaceId, user])
 
   async function loadSpace() {
-    const data = await fetchSpace(spaceId)
+    const data = await fetchSpace(slug)
     if (!data) return router.push('/')
     const role = user ? await getMemberRole(data.id, user.id) : null
-    if (role !== 'owner' && role !== 'admin') return router.push(`/spaces/${spaceId}`)
+    if (role !== 'owner' && role !== 'admin') return router.push(`/spaces/${slug}`)
 
     setSpace(data)
     setName(data.name)
@@ -129,7 +129,7 @@ export default function SpaceSettingsPage() {
     <AppShell>
       <div className={styles.page}>
         <div className={styles.header}>
-          <button className={styles.backBtn} onClick={() => router.push(`/spaces/${spaceId}`)}>← Back to Space</button>
+          <button className={styles.backBtn} onClick={() => router.push(`/spaces/${slug}`)}>← Back to Space</button>
           <h1 className={styles.title}>Manage Space</h1>
         </div>
 

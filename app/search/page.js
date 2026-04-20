@@ -9,46 +9,75 @@ import styles from './search.module.css'
 
 export default function SearchPage() {
   const { user } = useAuth()
-  const router = useRouter()
+  const router   = useRouter()
 
-  const [query, setQuery] = useState('')
-  const [results, setResults] = useState([])
-  const [selected, setSelected] = useState(null)
+  const [query, setQuery]           = useState('')
+  const [userResults, setUserResults] = useState([])
+  const [spaceResults, setSpaceResults] = useState([])
+  const [selected, setSelected]     = useState(null)
+  const [selectedType, setSelectedType] = useState(null) // 'user' | 'space'
   const [friendStatus, setFriendStatus] = useState(null)
-  const [searching, setSearching] = useState(false)
+  const [searching, setSearching]   = useState(false)
+  const [tab, setTab]               = useState('all') // 'all' | 'users' | 'spaces'
   const [actionLoading, setActionLoading] = useState(false)
 
   useEffect(() => {
     if (query.trim()) doSearch()
-    else setResults([])
-  }, [query])
+    else { setUserResults([]); setSpaceResults([]) }
+  }, [query, tab])
 
   useEffect(() => {
-    if (selected && user) fetchFriendStatus(selected.id)
-  }, [selected, user])
+    if (selected && selectedType === 'user' && user) {
+      fetchFriendStatus(selected.id)
+    }
+  }, [selected])
 
   async function doSearch() {
     setSearching(true)
-    const { data } = await supabase
-      .from('profiles')
-      .select('id, username, avatar_url, bio')
-      .ilike('username', `%${query}%`)
-      .limit(20)
-    setResults(data || [])
+    const promises = []
+
+    if (tab === 'all' || tab === 'users') {
+      promises.push(
+        supabase
+          .from('profiles')
+          .select('id, username, avatar_url, bio, rank_name, trace')
+          .ilike('username', `%${query}%`)
+          .neq('role', 'admin')
+          .limit(15)
+      )
+    } else {
+      promises.push(Promise.resolve({ data: [] }))
+    }
+
+    if (tab === 'all' || tab === 'spaces') {
+      promises.push(
+        supabase
+          .from('spaces')
+          .select('id, name, slug, icon_url, description, member_count, post_count, tags')
+          .or(`name.ilike.%${query}%,description.ilike.%${query}%,slug.ilike.%${query}%`)
+          .limit(15)
+      )
+    } else {
+      promises.push(Promise.resolve({ data: [] }))
+    }
+
+    const [usersRes, spacesRes] = await Promise.all(promises)
+    setUserResults(usersRes.data || [])
+    setSpaceResults(spacesRes.data || [])
     setSearching(false)
   }
 
   async function fetchFriendStatus(profileId) {
     if (!user || profileId === user.id) return setFriendStatus('self')
 
-    const { data: friendRow } = await supabase.from('friends').select('id').eq('user_id', user.id).eq('friend_id', profileId).single()
-    if (friendRow) return setFriendStatus('friends')
+    const { data: fr } = await supabase.from('friends').select('id').eq('user_id', user.id).eq('friend_id', profileId).single()
+    if (fr) return setFriendStatus('friends')
 
-    const { data: sentReq } = await supabase.from('friend_requests').select('id').eq('sender_id', user.id).eq('receiver_id', profileId).eq('status', 'pending').single()
-    if (sentReq) return setFriendStatus('pending_sent')
+    const { data: sent } = await supabase.from('friend_requests').select('id').eq('sender_id', user.id).eq('receiver_id', profileId).eq('status', 'pending').single()
+    if (sent) return setFriendStatus('pending_sent')
 
-    const { data: recvReq } = await supabase.from('friend_requests').select('id').eq('sender_id', profileId).eq('receiver_id', user.id).eq('status', 'pending').single()
-    if (recvReq) return setFriendStatus('pending_received')
+    const { data: recv } = await supabase.from('friend_requests').select('id').eq('sender_id', profileId).eq('receiver_id', user.id).eq('status', 'pending').single()
+    if (recv) return setFriendStatus('pending_received')
 
     setFriendStatus(null)
   }
@@ -73,6 +102,11 @@ export default function SearchPage() {
     setFriendStatus('friends')
   }
 
+  const totalResults = userResults.length + spaceResults.length
+
+  function selectUser(u) { setSelected(u); setSelectedType('user'); setFriendStatus(null) }
+  function selectSpace(s) { setSelected(s); setSelectedType('space') }
+
   return (
     <AppShell noPadding>
       <div className={styles.layout}>
@@ -82,41 +116,89 @@ export default function SearchPage() {
             <button className={styles.backBtn} onClick={() => router.back()}>←</button>
             <input
               className={styles.searchInput}
-              placeholder="Search users..."
+              placeholder="Search users and spaces..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               autoFocus
             />
           </div>
 
+          {/* Tabs */}
+          <div className={styles.tabRow}>
+            {['all', 'users', 'spaces'].map((t) => (
+              <button
+                key={t}
+                className={`${styles.tabBtn} ${tab === t ? styles.tabActive : ''}`}
+                onClick={() => setTab(t)}
+              >
+                {t.charAt(0).toUpperCase() + t.slice(1)}
+              </button>
+            ))}
+          </div>
+
           <div className={styles.resultsList}>
             {searching && <p className={styles.hint}>Searching...</p>}
-            {!searching && query && results.length === 0 && <p className={styles.hint}>No users found.</p>}
-            {results.map((u) => (
-              <div
-                key={u.id}
-                className={`${styles.resultRow} ${selected?.id === u.id ? styles.activeResult : ''}`}
-                onClick={() => setSelected(u)}
-              >
-                <div className={styles.resultAvatar}>
-                  {u.avatar_url ? <img src={u.avatar_url} alt="" className={styles.resultAvatarImg} /> : <span>{u.username[0].toUpperCase()}</span>}
-                </div>
-                <div className={styles.resultInfo}>
-                  <p className={styles.resultUsername}>@{u.username}</p>
-                  {u.bio && <p className={styles.resultBio}>{u.bio}</p>}
-                </div>
-              </div>
-            ))}
+
+            {!searching && query && totalResults === 0 && (
+              <p className={styles.hint}>No results for "{query}"</p>
+            )}
+
+            {/* Users */}
+            {userResults.length > 0 && (
+              <>
+                {(tab === 'all') && <p className={styles.sectionLabel}>USERS</p>}
+                {userResults.map((u) => (
+                  <div
+                    key={u.id}
+                    className={`${styles.resultRow} ${selected?.id === u.id && selectedType === 'user' ? styles.activeResult : ''}`}
+                    onClick={() => selectUser(u)}
+                  >
+                    <div className={styles.resultAvatar}>
+                      {u.avatar_url ? <img src={u.avatar_url} alt="" className={styles.resultAvatarImg} /> : <span>{u.username[0].toUpperCase()}</span>}
+                    </div>
+                    <div className={styles.resultInfo}>
+                      <p className={styles.resultName}>@{u.username}</p>
+                      {u.bio && <p className={styles.resultSub}>{u.bio}</p>}
+                    </div>
+                    {u.rank_name && <span className={styles.rankTag}>{u.rank_name}</span>}
+                  </div>
+                ))}
+              </>
+            )}
+
+            {/* Spaces */}
+            {spaceResults.length > 0 && (
+              <>
+                {(tab === 'all') && <p className={styles.sectionLabel} style={{ marginTop: userResults.length > 0 ? '1rem' : 0 }}>SPACES</p>}
+                {spaceResults.map((s) => (
+                  <div
+                    key={s.id}
+                    className={`${styles.resultRow} ${selected?.id === s.id && selectedType === 'space' ? styles.activeResult : ''}`}
+                    onClick={() => selectSpace(s)}
+                  >
+                    <div className={`${styles.resultAvatar} ${styles.spaceAvatar}`}>
+                      {s.icon_url ? <img src={s.icon_url} alt="" className={styles.resultAvatarImg} /> : <span>{s.name[0].toUpperCase()}</span>}
+                    </div>
+                    <div className={styles.resultInfo}>
+                      <p className={styles.resultName}>{s.name}</p>
+                      <p className={styles.resultSub}>{(s.member_count || 0).toLocaleString()} members · {s.post_count || 0} posts</p>
+                    </div>
+                    <span className={styles.spaceTag}>Space</span>
+                  </div>
+                ))}
+              </>
+            )}
           </div>
         </div>
 
-        {/* RIGHT — profile preview */}
+        {/* RIGHT — preview */}
         <div className={styles.rightPanel}>
           {!selected ? (
             <div className={styles.noSelection}>
-              <p>Search for a user to view their profile</p>
+              <p>Search for users or spaces</p>
             </div>
-          ) : (
+          ) : selectedType === 'user' ? (
+            // User preview
             <div className={styles.profilePreview}>
               <div className={styles.profileAvatar}>
                 {selected.avatar_url
@@ -125,6 +207,7 @@ export default function SearchPage() {
                 }
               </div>
               <h2 className={styles.profileUsername}>@{selected.username}</h2>
+              {selected.rank_name && <p className={styles.profileRank}>{selected.rank_name}</p>}
               {selected.bio && <p className={styles.profileBio}>{selected.bio}</p>}
 
               <div className={styles.profileActions}>
@@ -133,16 +216,14 @@ export default function SearchPage() {
                 )}
                 {friendStatus === null && (
                   <button className={styles.addBtn} onClick={sendFriendRequest} disabled={actionLoading}>
-                    <AddFriendIcon /> {actionLoading ? 'Sending...' : 'Send request'}
+                    + Send request
                   </button>
                 )}
                 {friendStatus === 'pending_sent' && (
                   <button className={styles.pendingBtn} disabled>Request sent</button>
                 )}
                 {friendStatus === 'pending_received' && (
-                  <button className={styles.acceptBtn} onClick={acceptRequest} disabled={actionLoading}>
-                    {actionLoading ? '...' : 'Accept request'}
-                  </button>
+                  <button className={styles.acceptBtn} onClick={acceptRequest} disabled={actionLoading}>Accept request</button>
                 )}
                 {friendStatus === 'friends' && (
                   <button className={styles.friendsBtn}>✓ Friends</button>
@@ -154,13 +235,41 @@ export default function SearchPage() {
                 )}
               </div>
             </div>
+          ) : (
+            // Space preview
+            <div className={styles.spacePreview}>
+              <div className={styles.spacePreviewIcon}>
+                {selected.icon_url
+                  ? <img src={selected.icon_url} alt="" className={styles.spacePreviewIconImg} />
+                  : <span>{selected.name[0].toUpperCase()}</span>
+                }
+              </div>
+              <h2 className={styles.spacePreviewName}>{selected.name}</h2>
+              <div className={styles.spacePreviewStats}>
+                <span>{(selected.member_count || 0).toLocaleString()} members</span>
+                <span>·</span>
+                <span>{selected.post_count || 0} posts</span>
+              </div>
+              {selected.description && (
+                <p className={styles.spacePreviewDesc}>{selected.description}</p>
+              )}
+              {selected.tags?.length > 0 && (
+                <div className={styles.spacePreviewTags}>
+                  {selected.tags.map((tag) => (
+                    <span key={tag} className={styles.spacePreviewTag}>#{tag}</span>
+                  ))}
+                </div>
+              )}
+              <button
+                className={styles.visitSpaceBtn}
+                onClick={() => router.push(`/spaces/${selected.slug}`)}
+              >
+                Visit Space →
+              </button>
+            </div>
           )}
         </div>
       </div>
     </AppShell>
   )
-}
-
-function AddFriendIcon() {
-  return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'6px'}}><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
 }

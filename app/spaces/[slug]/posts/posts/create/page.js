@@ -2,10 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { supabase } from '../../../../../lib/supabase'
-import { useAuth } from '../../../../../lib/AuthContext'
-import { fetchSpace, getMemberRole } from '../../../../../lib/feedEngine'
-import AppShell from '../../../../../components/AppShell'
+import { supabase } from '../../../../../../lib/supabase'
+import { useAuth } from '../../../../../../lib/AuthContext'
+import { fetchSpace, getMemberRole } from '../../../../../../lib/feedEngine'
+import AppShell from '../../../../../../components/AppShell'
 import styles from './create-post.module.css'
 
 export default function CreatePostPage() {

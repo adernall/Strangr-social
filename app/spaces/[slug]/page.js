@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { supabase } from '../../../../lib/supabase'
-import { useAuth } from '../../../../lib/AuthContext'
+import { supabase } from '../../../lib/supabase'
+import { useAuth } from '../../../lib/AuthContext'
 import {
   fetchSpace, fetchSpacePosts, fetchSpaceMembers,
   getMemberRole, joinSpace, leaveSpace, formatPostTime
-} from '../../../../lib/feedEngine'
-import AppShell from '../../../../components/AppShell'
-import PostCard from '../../../../components/posts/PostCard'
+} from '../../../lib/feedEngine'
+import AppShell from '../../../components/AppShell'
+import PostCard from '../../../components/posts/PostCard'
 import styles from './space.module.css'
 
 export default function SpacePage() {

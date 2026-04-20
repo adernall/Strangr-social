@@ -1,0 +1,295 @@
+/* app/feed/feed.module.css */
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 5rem;
+  font-family: var(--font-outfit), sans-serif;
+  color: #f0f0f5;
+}
+
+/* Top bar */
+.topBar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.feedTitle {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #f0f0f5;
+  letter-spacing: -0.03em;
+}
+
+.feedSub {
+  font-size: 13px;
+  color: rgba(240,240,245,0.35);
+  margin-top: 2px;
+}
+
+.createSpaceBtn {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: #6c63ff;
+  border: none;
+  padding: 0.55rem 1.1rem;
+  border-radius: 9px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+
+.createSpaceBtn:hover { opacity: 0.87; }
+
+/* My Spaces */
+.mySpacesRow {
+  margin-bottom: 1.25rem;
+}
+
+.mySpacesLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: rgba(240,240,245,0.3);
+  margin-bottom: 0.625rem;
+}
+
+.mySpacesScroll {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  scrollbar-width: none;
+}
+
+.mySpacesScroll::-webkit-scrollbar { display: none; }
+
+.mySpaceChip {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 100px;
+  padding: 5px 12px 5px 5px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(240,240,245,0.7);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.mySpaceChip:hover {
+  border-color: rgba(108,99,255,0.35);
+  color: #f0f0f5;
+  background: rgba(108,99,255,0.08);
+}
+
+.mySpaceAdd {
+  border-style: dashed;
+  border-color: rgba(255,255,255,0.1);
+  color: rgba(240,240,245,0.4);
+}
+
+.mySpaceAdd:hover {
+  border-color: rgba(108,99,255,0.4) !important;
+  color: #6c63ff !important;
+}
+
+.mySpaceIcon {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: rgba(108,99,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: #6c63ff;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.mySpaceIconImg { width: 100%; height: 100%; object-fit: cover; }
+
+/* Tag filters */
+.tagFilters {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  margin-bottom: 1.5rem;
+  scrollbar-width: none;
+}
+
+.tagFilters::-webkit-scrollbar { display: none; }
+
+.tagFilter {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(240,240,245,0.45);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  padding: 5px 13px;
+  border-radius: 100px;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.tagFilter:hover { color: #f0f0f5; border-color: rgba(255,255,255,0.15); }
+
+.tagFilterActive {
+  background: rgba(108,99,255,0.15) !important;
+  border-color: rgba(108,99,255,0.4) !important;
+  color: #6c63ff !important;
+}
+
+/* ─── BENTO GRID ─────────────────────────────────────────────────────────── */
+.bentoGrid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: 200px;
+  gap: 0.875rem;
+}
+
+.bentoItem { min-height: 0; }
+
+/* Large: full width of 8 cols, 2 rows tall */
+.bentoItem.large {
+  grid-column: span 8;
+  grid-row: span 2;
+}
+
+/* Medium: 4 cols, 1 row */
+.bentoItem.medium {
+  grid-column: span 6;
+  grid-row: span 1;
+}
+
+/* Small: 4 cols, 1 row */
+.bentoItem.small {
+  grid-column: span 4;
+  grid-row: span 1;
+}
+
+.bentoItem > * { height: 100%; }
+
+/* Loading skeletons */
+.loadingGrid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: 200px;
+  gap: 0.875rem;
+}
+
+.skeleton {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.skeleton.large { grid-column: span 8; grid-row: span 2; border-radius: 16px; }
+.skeleton.medium { grid-column: span 6; }
+.skeleton.small { grid-column: span 4; }
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* Empty */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 0;
+  gap: 0.5rem;
+  color: rgba(240,240,245,0.3);
+  font-size: 15px;
+  text-align: center;
+}
+
+.emptySub { font-size: 13px; color: rgba(240,240,245,0.2); }
+
+.createSpaceBtn2 {
+  font-size: 14px;
+  font-weight: 500;
+  color: #6c63ff;
+  background: rgba(108,99,255,0.1);
+  border: 1px solid rgba(108,99,255,0.25);
+  padding: 0.65rem 1.5rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  margin-top: 0.5rem;
+  transition: background 0.2s;
+}
+
+.createSpaceBtn2:hover { background: rgba(108,99,255,0.2); }
+
+/* Load more */
+.loadMoreWrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.loadMoreBtn {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(240,240,245,0.6);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  padding: 0.75rem 2rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s, color 0.2s;
+}
+
+.loadMoreBtn:hover:not(:disabled) { background: rgba(255,255,255,0.09); color: #f0f0f5; }
+.loadMoreBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .bentoGrid, .loadingGrid {
+    grid-template-columns: repeat(6, 1fr);
+    grid-auto-rows: 180px;
+  }
+
+  .bentoItem.large { grid-column: span 6; grid-row: span 2; }
+  .bentoItem.medium { grid-column: span 6; }
+  .bentoItem.small { grid-column: span 3; }
+  .skeleton.large { grid-column: span 6; }
+  .skeleton.medium { grid-column: span 6; }
+  .skeleton.small { grid-column: span 3; }
+}
+
+@media (max-width: 600px) {
+  .bentoGrid, .loadingGrid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+  }
+
+  .bentoItem.large, .bentoItem.medium, .bentoItem.small {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+
+  .skeleton.large, .skeleton.medium, .skeleton.small {
+    grid-column: span 1;
+    height: 180px;
+  }
+}

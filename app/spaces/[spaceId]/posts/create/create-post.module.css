@@ -1,0 +1,55 @@
+/* app/spaces/[spaceId]/posts/create/create-post.module.css */
+.page { display: flex; justify-content: center; padding: 2.5rem 1rem 5rem; min-height: 100%; }
+
+.card { background: #0f0f1a; border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 2rem; width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 1.25rem; }
+
+.cardHeader { display: flex; align-items: center; gap: 0.875rem; }
+
+.backBtn { font-size: 1.1rem; color: rgba(240,240,245,0.4); background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: color 0.2s; }
+.backBtn:hover { color: #f0f0f5; }
+
+.spaceChip { display: flex; align-items: center; gap: 0.5rem; background: rgba(108,99,255,0.1); border: 1px solid rgba(108,99,255,0.2); border-radius: 100px; padding: 4px 12px 4px 4px; font-size: 13px; font-weight: 500; color: rgba(240,240,245,0.8); }
+
+.spaceIconSmall { width: 22px; height: 22px; border-radius: 6px; background: rgba(108,99,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #6c63ff; overflow: hidden; }
+.spaceIconImg { width: 100%; height: 100%; object-fit: cover; }
+
+.title { font-size: 1.35rem; font-weight: 700; color: #f0f0f5; letter-spacing: -0.02em; }
+
+.spinner { width: 28px; height: 28px; border: 2px solid rgba(108,99,255,0.2); border-top-color: #6c63ff; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.field { display: flex; flex-direction: column; gap: 0.35rem; }
+
+.fieldLabel { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: rgba(240,240,245,0.3); }
+
+.contentTextarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09); border-radius: 12px; padding: 1rem; font-size: 15px; color: #f0f0f5; font-family: inherit; outline: none; resize: none; transition: border-color 0.2s; line-height: 1.6; }
+.contentTextarea::placeholder { color: rgba(240,240,245,0.25); }
+.contentTextarea:focus { border-color: rgba(108,99,255,0.5); }
+
+.charCount { font-size: 11px; color: rgba(240,240,245,0.25); text-align: right; }
+
+/* Image */
+.imagePreviewWrap { position: relative; }
+.imagePreview { width: 100%; max-height: 320px; border-radius: 12px; object-fit: cover; display: block; }
+.removeImage { position: absolute; top: 8px; right: 8px; width: 28px; height: 28px; border-radius: 50%; background: rgba(0,0,0,0.6); border: none; color: #fff; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+/* Tags */
+.tagInputWrap { display: flex; flex-wrap: wrap; gap: 0.4rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 0.625rem; min-height: 44px; align-items: center; }
+
+.tagPill { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #6c63ff; background: rgba(108,99,255,0.15); border: 1px solid rgba(108,99,255,0.3); padding: 3px 10px; border-radius: 100px; }
+.tagRemove { background: none; border: none; color: rgba(108,99,255,0.6); cursor: pointer; font-size: 11px; padding: 0; line-height: 1; }
+
+.tagInput { background: none; border: none; color: #f0f0f5; font-size: 13px; font-family: inherit; outline: none; flex: 1; min-width: 80px; }
+.tagInput::placeholder { color: rgba(240,240,245,0.25); }
+
+.error { font-size: 13px; color: #ff6b6b; background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.2); border-radius: 8px; padding: 0.6rem 0.875rem; }
+
+/* Footer */
+.footer { display: flex; align-items: center; justify-content: space-between; padding-top: 0.25rem; }
+
+.imgBtn { display: flex; align-items: center; gap: 0.5rem; font-size: 13px; font-weight: 500; color: rgba(240,240,245,0.5); background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 0.55rem 1rem; border-radius: 9px; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+.imgBtn:hover { color: #f0f0f5; background: rgba(255,255,255,0.08); }
+
+.postBtn { font-size: 14px; font-weight: 600; color: #fff; background: #6c63ff; border: none; padding: 0.65rem 1.5rem; border-radius: 10px; cursor: pointer; font-family: inherit; transition: opacity 0.2s; }
+.postBtn:hover:not(:disabled) { opacity: 0.87; }
+.postBtn:disabled { opacity: 0.4; cursor: not-allowed; }

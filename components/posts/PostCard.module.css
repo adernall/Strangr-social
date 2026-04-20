@@ -1,0 +1,169 @@
+/* components/posts/PostCard.module.css */
+.card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 1rem 1.125rem;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  font-family: var(--font-outfit), sans-serif;
+  color: #f0f0f5;
+  overflow: hidden;
+}
+
+.card:hover {
+  background: rgba(255,255,255,0.05);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  transform: translateY(-1px);
+}
+
+/* Sizes */
+.small  { padding: 0.75rem; border-radius: 12px; }
+.large  { padding: 1.375rem 1.5rem; border-radius: 16px; }
+
+/* Space badge */
+.spaceBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.spaceIcon {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  background: rgba(108,99,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  color: #6c63ff;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.spaceIconImg { width: 100%; height: 100%; object-fit: cover; }
+
+.spaceName {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(108,99,255,0.8);
+  letter-spacing: 0.02em;
+}
+
+.spaceName:hover { color: #6c63ff; }
+
+/* Image */
+.imageWrap {
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.04);
+}
+
+.postImage {
+  width: 100%;
+  height: auto;
+  max-height: 280px;
+  object-fit: cover;
+  display: block;
+}
+
+.large .postImage { max-height: 360px; }
+
+/* Content */
+.content {
+  font-size: 14px;
+  line-height: 1.65;
+  color: rgba(240,240,245,0.85);
+  flex: 1;
+}
+
+.large .content { font-size: 15px; }
+.small .content { font-size: 13px; line-height: 1.5; }
+
+/* Tags */
+.tags { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+
+.tag {
+  font-size: 11px;
+  color: rgba(108,99,255,0.7);
+  background: rgba(108,99,255,0.08);
+  padding: 2px 8px;
+  border-radius: 100px;
+}
+
+/* Footer */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 0.25rem;
+}
+
+.authorRow {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+}
+
+.authorAvatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(108,99,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  color: #6c63ff;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.authorAvatarImg { width: 100%; height: 100%; object-fit: cover; }
+
+.authorName {
+  font-size: 12px;
+  color: rgba(240,240,245,0.45);
+  font-weight: 500;
+}
+
+.authorName:hover { color: rgba(240,240,245,0.7); }
+
+.postTime {
+  font-size: 11px;
+  color: rgba(240,240,245,0.25);
+}
+
+.actions { display: flex; align-items: center; gap: 0.5rem; }
+
+.likeBtn, .commentBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(240,240,245,0.4);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.likeBtn:hover { color: #ff6b8a; background: rgba(255,107,138,0.08); }
+.liked { color: #ff6b8a !important; }
+
+.commentBtn:hover { color: rgba(240,240,245,0.8); background: rgba(255,255,255,0.05); }

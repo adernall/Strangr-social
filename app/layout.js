@@ -10,7 +10,7 @@ const outfit = Outfit({
 })
 
 export const metadata = {
-  title: 'Strangr — Meet Someone New',
+  title: 'Strangr',
   description: 'Anonymous chat. Real connections.',
 }
 

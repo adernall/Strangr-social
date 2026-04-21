@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '../../lib/supabase'
-import { useAuth } from '../../lib/AuthContext'
-import NotificationBell from '../notifications/NotificationBell'
+import { supabase } from '../lib/supabase'
+import { useAuth } from '../lib/AuthContext'
+import NotificationBell from './notifications/NotificationBell'
 import styles from './TopBar.module.css'
 
 export default function TopBar() {

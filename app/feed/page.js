@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '../../lib/AuthContext'
 import { fetchFeedPosts, fetchUserSpaces } from '../../lib/feedEngine'
 import AppShell from '../../components/AppShell'
-import PostCard from '../../components/posts/PostCard'
+import PostCard from '../../components/posts/BentoPost'
 import styles from './feed.module.css'
 
 const ALL_TAGS = ['tech','art','gaming','music','science','sports','movies','food','travel','design','crypto','anime']

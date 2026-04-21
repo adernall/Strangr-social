@@ -7,15 +7,15 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { supabase } from '../../../../lib/supabase'
-import { useAuth } from '../../../../lib/AuthContext'
+import { supabase } from '../../../lib/supabase'
+import { useAuth } from '../../../lib/AuthContext'
 import {
   fetchSpace, fetchSpacePosts, fetchSpaceMembers,
   getMemberRole, joinSpace, leaveSpace, formatPostTime
-} from '../../../../lib/feedEngine'
-import AppShell from '../../../../components/AppShell'
-import PostCard from '../../../../components/posts/PostCard'
-import GuidelineModal from '../../../../components/spaces/GuidelineModal'
+} from '../../../lib/feedEngine'
+import AppShell from '../../../components/AppShell'
+import BentoPost from '../../../components/posts/BentoPost'
+import GuidelineModal from '../../../components/spaces/GuidelineModal'
 import styles from './space.module.css'
 
 // Deterministic bento sizes based on index

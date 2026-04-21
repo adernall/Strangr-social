@@ -11,7 +11,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/AuthContext'
 import { fetchFeedPosts, fetchUserSpaces } from '../lib/feedEngine'
 import AppShell from '../components/AppShell'
-import PostCard from '../components/posts/PostCard'
+import PostCard from '../components/posts/BentoPost'
 import styles from './page.module.css'
 
 const ParticlesBg = dynamic(() => import('../components/ParticlesBg'), { ssr: false })

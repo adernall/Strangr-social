@@ -8,10 +8,10 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { supabase } from '../../../../../lib/supabase'
-import { useAuth } from '../../../../../lib/AuthContext'
-import { fetchSpace, getMemberRole, toSlug } from '../../../../../lib/feedEngine'
-import AppShell from '../../../../../components/AppShell'
+import { supabase } from '../../../../lib/supabase'
+import { useAuth } from '../../../../lib/AuthContext'
+import { fetchSpace, getMemberRole, toSlug } from '../../../../lib/feedEngine'
+import AppShell from '../../../../components/AppShell'
 import styles from './settings.module.css'
 
 const SUGGESTED_TAGS = ['tech','art','gaming','music','science','sports','movies','food','travel','design','crypto','anime']

@@ -1,208 +1,82 @@
 /* app/profile/[username]/profile.module.css */
-.page {
-  min-height: 100vh;
-  background: #080810;
-  color: #f0f0f5;
-  font-family: var(--font-outfit), sans-serif;
-}
+.page { max-width: 800px; margin: 0 auto; padding: 0 1rem 5rem; font-family: var(--font-outfit), sans-serif; color: #f0f0f5; }
 
-.loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 60vh;
-}
+.center { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; gap: 1rem; }
 
-.spinner {
-  width: 28px;
-  height: 28px;
-  border: 2px solid rgba(108,99,255,0.2);
-  border-top-color: #6c63ff;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
+.spinner { width: 28px; height: 28px; border: 2px solid rgba(108,99,255,0.2); border-top-color: #6c63ff; border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-.notFound {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 60vh;
-  gap: 1rem;
-  color: rgba(240,240,245,0.4);
-  font-size: 15px;
-}
+.errorText { font-size: 15px; color: rgba(240,240,245,0.45); }
+.backBtn { font-size: 13px; color: #6c63ff; background: rgba(108,99,255,0.1); border: 1px solid rgba(108,99,255,0.25); padding: 0.5rem 1.25rem; border-radius: 9px; cursor: pointer; font-family: inherit; }
 
-.main {
-  display: flex;
-  justify-content: center;
-  padding: 4rem 1rem;
-}
+/* Banner */
+.banner { height: 180px; background: linear-gradient(135deg, rgba(108,99,255,0.25), rgba(167,139,250,0.12)); border-radius: 0 0 16px 16px; background-size: cover; background-position: center; margin-bottom: 0; }
 
-.card {
-  background: #0f0f1a;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 20px;
-  padding: 3rem 2.5rem;
-  width: 100%;
-  max-width: 420px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  text-align: center;
-}
+/* Profile header */
+.profileHeader { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; padding: 0 0 1.25rem; flex-wrap: wrap; margin-top: -2rem; }
 
-.avatarWrap { margin-bottom: 0.5rem; }
+.headerLeft { display: flex; align-items: flex-end; gap: 1rem; }
 
-.avatar {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid rgba(108,99,255,0.25);
-}
+.avatarWrap { width: 80px; height: 80px; border-radius: 50%; background: rgba(108,99,255,0.15); border: 3px solid #080810; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.avatar { width: 100%; height: 100%; object-fit: cover; }
+.avatarFallback { font-size: 2rem; font-weight: 700; color: #6c63ff; }
 
-.avatarFallback {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background: rgba(108,99,255,0.15);
-  border: 3px solid rgba(108,99,255,0.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.5rem;
-  font-weight: 600;
-  color: #6c63ff;
-}
+.nameBlock { padding-bottom: 4px; }
+.displayName { font-size: 1.3rem; font-weight: 700; color: #f0f0f5; letter-spacing: -0.02em; }
+.usernameText { font-size: 13px; color: rgba(240,240,245,0.4); margin-top: 2px; }
+.rankBadge { display: inline-block; margin-top: 5px; font-size: 11px; font-weight: 600; color: rgba(108,99,255,0.8); background: rgba(108,99,255,0.1); border: 1px solid rgba(108,99,255,0.2); padding: 2px 9px; border-radius: 100px; }
 
-.username { font-size: 1.35rem; font-weight: 600; color: #f0f0f5; }
+.headerRight { display: flex; gap: 0.5rem; align-items: flex-end; flex-wrap: wrap; }
 
-.bio {
-  font-size: 14px;
-  color: rgba(240,240,245,0.5);
-  line-height: 1.7;
-  max-width: 300px;
-}
+.editBtn { font-size: 13px; font-weight: 500; color: rgba(240,240,245,0.7); background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 0.55rem 1.1rem; border-radius: 9px; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+.editBtn:hover { background: rgba(255,255,255,0.1); }
 
-.actions {
-  display: flex;
-  gap: 0.75rem;
-  margin-top: 0.75rem;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.addBtn {
-  font-size: 14px;
-  font-weight: 500;
-  color: #fff;
-  background: #6c63ff;
-  border: none;
-  padding: 0.65rem 1.25rem;
-  border-radius: 9px;
-  cursor: pointer;
-  font-family: inherit;
-  transition: opacity 0.2s;
-}
-
+.addBtn { font-size: 13px; font-weight: 600; color: #fff; background: #6c63ff; border: none; padding: 0.55rem 1.1rem; border-radius: 9px; cursor: pointer; font-family: inherit; transition: opacity 0.2s; }
 .addBtn:hover:not(:disabled) { opacity: 0.85; }
 
-.pendingBtn {
-  font-size: 14px;
-  font-weight: 500;
-  color: rgba(240,240,245,0.4);
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  padding: 0.65rem 1.25rem;
-  border-radius: 9px;
-  cursor: not-allowed;
-  font-family: inherit;
-}
+.pendingBtn { font-size: 13px; color: rgba(240,240,245,0.35); background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 0.55rem 1.1rem; border-radius: 9px; font-family: inherit; cursor: not-allowed; }
 
-.acceptBtn {
-  font-size: 14px;
-  font-weight: 500;
-  color: rgba(50,210,120,0.9);
-  background: rgba(50,210,120,0.1);
-  border: 1px solid rgba(50,210,120,0.25);
-  padding: 0.65rem 1.25rem;
-  border-radius: 9px;
-  cursor: pointer;
-  font-family: inherit;
-  transition: background 0.2s;
-}
+.acceptBtn { font-size: 13px; font-weight: 500; color: rgba(50,210,120,0.9); background: rgba(50,210,120,0.1); border: 1px solid rgba(50,210,120,0.25); padding: 0.55rem 1.1rem; border-radius: 9px; cursor: pointer; font-family: inherit; }
 
-.acceptBtn:hover:not(:disabled) { background: rgba(50,210,120,0.18); }
+.friendsBadge { font-size: 13px; font-weight: 500; color: rgba(50,210,120,0.8); padding: 0.55rem 0; }
 
-.friendsBtn {
-  font-size: 14px;
-  font-weight: 500;
-  color: rgba(50,210,120,0.85);
-  background: rgba(50,210,120,0.08);
-  border: 1px solid rgba(50,210,120,0.2);
-  padding: 0.65rem 1.25rem;
-  border-radius: 9px;
-  cursor: pointer;
-  font-family: inherit;
-  transition: background 0.2s, color 0.2s;
-}
+.msgBtn { font-size: 13px; font-weight: 500; color: rgba(240,240,245,0.65); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09); padding: 0.55rem 1.1rem; border-radius: 9px; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+.msgBtn:hover { background: rgba(255,255,255,0.09); }
 
-.friendsBtn:hover:not(:disabled) {
-  background: rgba(255,80,80,0.08);
-  color: rgba(255,100,100,0.8);
-  border-color: rgba(255,80,80,0.2);
-}
+/* Bio */
+.bio { font-size: 14px; color: rgba(240,240,245,0.6); line-height: 1.75; margin-bottom: 1.25rem; max-width: 520px; }
 
-.msgBtn {
-  font-size: 14px;
-  font-weight: 500;
-  color: rgba(240,240,245,0.7);
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  padding: 0.65rem 1.25rem;
-  border-radius: 9px;
-  cursor: pointer;
-  font-family: inherit;
-  transition: background 0.2s, color 0.2s;
-}
+/* Stats */
+.statsRow { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; }
+.stat { display: flex; flex-direction: column; gap: 2px; }
+.statNum { font-size: 1rem; font-weight: 700; color: #f0f0f5; }
+.statLabel { font-size: 11px; color: rgba(240,240,245,0.35); text-transform: uppercase; letter-spacing: 0.06em; }
 
-.msgBtn:hover { background: rgba(255,255,255,0.09); color: #f0f0f5; }
+/* Tabs */
+.tabs { display: flex; border-bottom: 1px solid rgba(255,255,255,0.07); margin-bottom: 1.5rem; }
+.tab { font-size: 13px; font-weight: 500; color: rgba(240,240,245,0.4); background: none; border: none; padding: 0.6rem 1rem; cursor: pointer; font-family: inherit; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; display: flex; align-items: center; gap: 0.4rem; }
+.tab:hover { color: #f0f0f5; }
+.activeTab { color: #f0f0f5; border-bottom-color: #6c63ff; }
+.tabCount { font-size: 11px; background: rgba(255,255,255,0.08); color: rgba(240,240,245,0.45); padding: 1px 7px; border-radius: 100px; }
 
-.editBtn {
-  font-size: 14px;
-  font-weight: 500;
-  color: rgba(240,240,245,0.6);
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  padding: 0.65rem 1.25rem;
-  border-radius: 9px;
-  cursor: pointer;
-  font-family: inherit;
-  transition: background 0.2s;
-}
+/* Posts grid */
+.postsGrid { display: flex; flex-direction: column; gap: 0.75rem; }
+.empty { text-align: center; padding: 3rem; color: rgba(240,240,245,0.3); font-size: 14px; }
 
-.editBtn:hover { background: rgba(255,255,255,0.09); }
+.postCard { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 1rem 1.125rem; cursor: pointer; display: flex; flex-direction: column; gap: 0.625rem; transition: background 0.15s, transform 0.15s; }
+.postCard:hover { background: rgba(255,255,255,0.05); transform: translateY(-1px); }
 
-/* ─── RESPONSIVE ─────────────────────────────── */
-@media (max-width: 768px) {
-  .main { padding: 2rem 1rem; }
+.postSpace { display: flex; align-items: center; gap: 0.4rem; cursor: pointer; width: fit-content; }
+.postSpaceIcon { width: 18px; height: 18px; border-radius: 5px; background: rgba(108,99,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; color: #6c63ff; overflow: hidden; }
+.postSpaceIconImg { width: 100%; height: 100%; object-fit: cover; }
+.postSpace span { font-size: 11px; font-weight: 600; color: rgba(108,99,255,0.75); }
 
-  .card {
-    padding: 2rem 1.25rem;
-    border-radius: 16px;
-  }
+.postContent { font-size: 14px; color: rgba(240,240,245,0.8); line-height: 1.65; }
+.postImg { width: 100%; border-radius: 10px; max-height: 240px; object-fit: cover; display: block; }
+.postMeta { display: flex; gap: 1rem; font-size: 12px; color: rgba(240,240,245,0.35); }
 
-  .actions {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .addBtn, .pendingBtn, .acceptBtn, .friendsBtn, .msgBtn, .editBtn {
-    width: 100%;
-    justify-content: center;
-  }
+@media (max-width: 600px) {
+  .banner { height: 120px; }
+  .avatarWrap { width: 64px; height: 64px; }
+  .displayName { font-size: 1.1rem; }
 }

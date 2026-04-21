@@ -14,7 +14,7 @@ import {
   getMemberRole, joinSpace, leaveSpace, formatPostTime
 } from '../../../lib/feedEngine'
 import AppShell from '../../../components/AppShell'
-import BentoPost from '../../../components/posts/BentoPost'
+import PostCard from '../../../components/posts/BentoPost'
 import GuidelineModal from '../../../components/spaces/GuidelineModal'
 import styles from './space.module.css'
 

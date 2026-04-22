@@ -1,5 +1,10 @@
 /* components/notifications/NotificationBell.module.css */
-.wrap { position: relative; }
+
+.wrap {
+  position: relative;
+  /* IMPORTANT: do NOT set a width here. The wrap must be wide enough
+     to contain the absolute dropdown without clipping it. */
+}
 
 .bell {
   width: 36px;
@@ -15,9 +20,12 @@
   position: relative;
   transition: color 0.2s, background 0.2s;
   font-family: inherit;
+  flex-shrink: 0;
 }
-
-.bell:hover, .bellOpen { color: #f0f0f5; background: rgba(255,255,255,0.07); }
+.bell:hover, .bellOpen {
+  color: #f0f0f5;
+  background: rgba(255,255,255,0.07);
+}
 
 .badge {
   position: absolute;
@@ -34,46 +42,52 @@
   align-items: center;
   justify-content: center;
   padding: 0 3px;
-  border: 1.5px solid #0a0a14;
+  border: 1.5px solid #080810;
   font-family: var(--font-outfit), sans-serif;
+  pointer-events: none;
 }
 
-/* Dropdown */
+/* ─── DROPDOWN ───────────────────────────────────────────────────────────── */
 .dropdown {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  width: 320px;
+  position: fixed;           /* fixed so it's never clipped by any parent */
+  top: 62px;                 /* just below topbar */
+  right: 16px;               /* right edge of screen */
+  width: 380px;              /* proper width */
+  max-height: 520px;
   background: #111120;
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 16px;
   overflow: hidden;
-  z-index: 500;
-  box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  z-index: 9999;             /* above everything */
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
   animation: dropIn 0.18s ease;
   font-family: var(--font-outfit), sans-serif;
 }
 
 @keyframes dropIn {
-  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  from { opacity: 0; transform: translateY(-8px) scale(0.97); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+/* Header */
 .dropHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.25rem 0.75rem;
+  padding: 1.125rem 1.25rem 0.75rem;
   border-bottom: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
 }
 
 .dropTitle {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: #f0f0f5;
 }
 
-.markReadBtn {
+.markAllBtn {
   font-size: 11px;
   font-weight: 500;
   color: rgba(108,99,255,0.8);
@@ -83,65 +97,146 @@
   font-family: inherit;
   transition: color 0.2s;
 }
-.markReadBtn:hover { color: #6c63ff; }
+.markAllBtn:hover { color: #6c63ff; }
 
-.notifList {
-  max-height: 360px;
-  overflow-y: auto;
+/* Tabs */
+.tabRow {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
 }
-.notifList::-webkit-scrollbar { width: 3px; }
-.notifList::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
 
-/* Empty */
+.tabBtn {
+  flex: 1;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(240,240,245,0.4);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 0.625rem;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  transition: color 0.2s, border-color 0.2s;
+}
+.tabBtn:hover { color: #f0f0f5; }
+.tabActive {
+  color: #f0f0f5 !important;
+  border-bottom-color: #6c63ff !important;
+}
+
+.tabBadge {
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(108,99,255,0.2);
+  color: #6c63ff;
+  padding: 1px 6px;
+  border-radius: 100px;
+}
+
+/* List */
+.list {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+
+.list::-webkit-scrollbar { width: 4px; }
+.list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+/* Empty state */
 .empty {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  padding: 2.5rem 1.5rem;
+  gap: 0.625rem;
+  padding: 3rem 1.5rem;
   color: rgba(240,240,245,0.3);
   font-size: 13px;
 }
-.emptyIcon { font-size: 1.75rem; }
+.emptyIcon { font-size: 2rem; }
+.spinner {
+  width: 22px; height: 22px;
+  border: 2px solid rgba(108,99,255,0.2);
+  border-top-color: #6c63ff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-/* Notif rows */
+/* Notification row */
 .notifRow {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   padding: 0.875rem 1.25rem;
   cursor: pointer;
-  transition: background 0.15s;
   border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.15s;
   position: relative;
 }
-
 .notifRow:last-child { border-bottom: none; }
-.notifRow:hover { background: rgba(255,255,255,0.04); }
+.notifRow:hover { background: rgba(255,255,255,0.05); }
 .unread { background: rgba(108,99,255,0.05); }
-.unread:hover { background: rgba(108,99,255,0.09); }
+.unread:hover { background: rgba(108,99,255,0.08); }
 
-.notifIcon { font-size: 1rem; flex-shrink: 0; width: 20px; text-align: center; }
+.typeIcon {
+  font-size: 14px;
+  flex-shrink: 0;
+  width: 18px;
+  text-align: center;
+}
 
-.notifBody { display: flex; align-items: center; gap: 0.625rem; flex: 1; min-width: 0; }
-
-.notifAvatar {
-  width: 32px; height: 32px;
+.avatar {
+  width: 36px; height: 36px;
   border-radius: 50%;
   background: rgba(108,99,255,0.15);
   display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 600; color: #6c63ff;
-  overflow: hidden; flex-shrink: 0;
+  font-size: 13px; font-weight: 700; color: #6c63ff;
+  overflow: hidden;
+  flex-shrink: 0;
 }
-.notifAvatarImg { width: 100%; height: 100%; object-fit: cover; }
+.avatarImg { width: 100%; height: 100%; object-fit: cover; }
 
-.notifText { flex: 1; min-width: 0; }
-.notifMsg { font-size: 12px; color: rgba(240,240,245,0.8); line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.notifTime { font-size: 10px; color: rgba(240,240,245,0.3); margin-top: 1px; }
+.body {
+  flex: 1;
+  min-width: 0;
+}
+.notifText {
+  font-size: 13px;
+  color: rgba(240,240,245,0.85);
+  line-height: 1.45;
+  white-space: normal;  /* allow wrapping */
+  word-break: break-word;
+}
+.notifTime {
+  font-size: 11px;
+  color: rgba(240,240,245,0.3);
+  margin-top: 2px;
+}
 
-.unreadDot { width: 7px; height: 7px; border-radius: 50%; background: #6c63ff; flex-shrink: 0; }
+.dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #6c63ff;
+  flex-shrink: 0;
+}
 
-/* Mobile: full width */
+/* Mobile: full width at bottom */
 @media (max-width: 500px) {
-  .dropdown { position: fixed; top: 60px; left: 0; right: 0; width: 100%; border-radius: 0 0 16px 16px; }
+  .dropdown {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    border-radius: 0 0 16px 16px;
+    max-height: 70vh;
+  }
 }

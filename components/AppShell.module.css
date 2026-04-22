@@ -1,28 +1,70 @@
 /* components/AppShell.module.css */
 .shell {
   min-height: 100vh;
-  background: #080810;
-  font-family: var(--font-outfit), sans-serif;
+  background: #000;
+  color: #e2e2e2;
+  font-family: 'Inter', sans-serif;
 }
 
 .main {
-  padding-top: 54px;
-  padding-left: 56px;
+  padding-top: 72px;
+  margin-left: 260px;
   min-height: 100vh;
-  transition: padding-left 0.22s cubic-bezier(0.4,0,0.2,1);
 }
 
-.noPadding {
-  padding: 54px 0 0 56px;
+.noSidebar { margin-left: 0; }
+
+/* Mobile nav */
+.mobileNav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 60px;
+  background: rgba(0,0,0,0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid #1c1c1c;
+  z-index: 200;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 0.5rem;
+}
+
+.mobileBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex: 1;
+  background: none;
+  border: none;
+  color: #6b6b6b;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: color 0.15s;
+}
+.mobileBtn:hover { color: #e2e2e2; }
+.mobileBtnActive { color: #fff !important; }
+.mobileBtnLabel { font-size: 10px; font-weight: 600; font-family: inherit; }
+
+.mobilePost {
+  width: 46px; height: 46px;
+  background: #fff;
+  border-radius: 14px;
+  border: none;
+  color: #000;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s;
+  box-shadow: 0 4px 16px rgba(255,255,255,0.15);
+}
+.mobilePost:hover { background: #e2e2e2; transform: scale(1.05); }
+
+@media (max-width: 1024px) {
+  .main { margin-left: 0; }
 }
 
 @media (max-width: 768px) {
-  .main {
-    padding-left: 0;
-    padding-bottom: 60px;
-  }
-
-  .noPadding {
-    padding: 54px 0 60px 0;
-  }
+  .mobileNav { display: flex; }
+  .main { padding-bottom: 60px; }
 }

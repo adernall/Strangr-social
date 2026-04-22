@@ -1,33 +1,23 @@
 'use client'
 
-// This replaces the old homepage.
-// Feed is now the default "/" route for logged-in users.
-// Anonymous users still see the landing/chat page.
-
 import { useEffect, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import dynamic from 'next/dynamic'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/AuthContext'
 import { fetchFeedPosts, fetchUserSpaces } from '../lib/feedEngine'
 import AppShell from '../components/AppShell'
-import PostCard from '../components/posts/BentoPost'
+import PostCard from '../components/posts/PostCard'
 import styles from './page.module.css'
 
-const ParticlesBg = dynamic(() => import('../components/ParticlesBg'), { ssr: false })
-
-const ALL_TAGS = ['tech','art','gaming','music','science','sports','movies','food','travel','design','crypto','anime']
-
-function getBentoSize(index) {
-  const pattern = ['large','small','small','medium','medium','small','large','small','medium','small']
-  return pattern[index % pattern.length]
+function getBentoSize(post, i) {
+  if (post?.image_url) return i % 3 === 0 ? 'large' : 'medium'
+  return (post?.content?.length || 0) > 200 ? 'medium' : 'small'
 }
 
-// ── ANONYMOUS LANDING ──────────────────────────────────────────────────────
-function AnonPage() {
+// ── ANON LANDING ────────────────────────────────────────────────────────────
+function AnonLanding() {
   const router = useRouter()
   const searchParams = useSearchParams()
-
   const [showAuth, setShowAuth] = useState(null)
   const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
@@ -37,33 +27,31 @@ function AnonPage() {
   const [loading, setLoading]   = useState(false)
 
   useEffect(() => {
-    const auth = searchParams.get('auth')
-    if (auth === 'login') setShowAuth('login')
-    if (auth === 'signup') setShowAuth('signup')
+    const a = searchParams.get('auth')
+    if (a) setShowAuth(a)
   }, [searchParams])
 
   function reset() { setEmail(''); setPassword(''); setConfirm(''); setError(''); setMessage('') }
-  function open(type) { reset(); setShowAuth(type) }
+  function open(t) { reset(); setShowAuth(t) }
 
   async function handleLogin() {
     setError(''); setLoading(true)
     const { data, error: err } = await supabase.auth.signInWithPassword({ email, password })
     setLoading(false)
     if (err) return setError(err.message)
-    const { data: profile } = await supabase.from('profiles').select('id').eq('id', data.user.id).maybeSingle()
-    setShowAuth(null)
-    router.push(profile ? '/' : '/setup-profile')
+    const { data: p } = await supabase.from('profiles').select('id').eq('id', data.user.id).maybeSingle()
+    router.push(p ? '/' : '/setup-profile')
   }
 
   async function handleSignup() {
     setError('')
     if (password !== confirm) return setError('Passwords do not match.')
-    if (password.length < 6) return setError('Password must be at least 6 characters.')
+    if (password.length < 6) return setError('Min 6 characters.')
     setLoading(true)
     const { error: err } = await supabase.auth.signUp({ email, password })
     setLoading(false)
     if (err) return setError(err.message)
-    setMessage('Check your email to confirm, then log in.')
+    setMessage('Check your email to confirm your account.')
   }
 
   async function handleReset() {
@@ -73,80 +61,97 @@ function AnonPage() {
     })
     setLoading(false)
     if (err) return setError(err.message)
-    setMessage('Reset link sent — check your email.')
+    setMessage('Reset link sent.')
   }
 
   return (
     <div className={styles.anonPage}>
-      <ParticlesBg />
-      <div className={styles.blob1} /><div className={styles.blob2} />
-
-      <header className={styles.anonTopbar}>
-        <span className={styles.anonLogo}>Strangr</span>
-        <div className={styles.anonTopRight}>
-          <button className={styles.anonSearchBtn} onClick={() => router.push('/search')}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      {/* Topbar */}
+      <header className={styles.anonBar}>
+        <div className={styles.anonLogo}>
+          <img src="/logo/strangr-logo.png" alt="Strangr" className={styles.anonLogoImg} />
+          <span className={styles.anonLogoText}>Strangr</span>
+        </div>
+        <nav className={styles.anonNav}>
+          <button className={`${styles.anonNavLink} ${styles.anonNavActive}`}>Explore</button>
+          <button className={styles.anonNavLink} onClick={() => open('login')}>Messages</button>
+        </nav>
+        <div className={styles.anonRight}>
+          <div className={styles.anonSearch}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Search Strangr...</span>
+          </div>
+          <button className={styles.anonCreateBtn} onClick={() => router.push('/chat')}>Start Chatting</button>
+          <button className={styles.anonIconBtn} onClick={() => {}}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
           </button>
-          <button className={styles.loginBtn} onClick={() => open('login')}>Login</button>
+          <button className={styles.anonAvatarBtn} onClick={() => open('login')}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </button>
         </div>
       </header>
 
-      <div className={styles.anonCenter}>
-        <p className={styles.eyebrow}>ANONYMOUS · REAL-TIME · FREE</p>
-        <h1 className={styles.headline}>Talk to a<br /><span className={styles.accent}>stranger.</span></h1>
-        <p className={styles.sub}>No account needed. Click and connect with someone new, anywhere in the world.</p>
-        <div className={styles.anonActions}>
-          <button className={styles.primaryBtn} onClick={() => router.push('/chat')}>Start chatting →</button>
-          <button className={styles.secondaryBtn} onClick={() => open('signup')}>Create account</button>
+      {/* Hero */}
+      <div className={styles.anonContent}>
+        <div className={styles.anonHero}>
+          <h1 className={styles.anonHeadline}>
+            Talk to a<br /><span className={styles.anonAccent}>stranger.</span>
+          </h1>
+          <p className={styles.anonSub}>Anonymous real-time chat. No account needed. Just connect.</p>
+          <div className={styles.anonActions}>
+            <button className={styles.anonPrimary} onClick={() => router.push('/chat')}>Start Chatting →</button>
+            <button className={styles.anonSecondary} onClick={() => open('signup')}>Create Account</button>
+          </div>
         </div>
       </div>
 
+      {/* Auth modal */}
       {showAuth && (
         <div className={styles.overlay} onClick={() => { setShowAuth(null); router.replace('/') }}>
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <button className={styles.close} onClick={() => { setShowAuth(null); router.replace('/') }}>✕</button>
+            <button className={styles.modalClose} onClick={() => { setShowAuth(null); router.replace('/') }}>✕</button>
 
             {showAuth === 'login' && (
               <>
                 <h2 className={styles.modalTitle}>Welcome back</h2>
-                <div className={styles.form}>
-                  <input className={styles.input} type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                  <input className={styles.input} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleLogin()} />
-                  {error && <p className={styles.errMsg}>{error}</p>}
-                  <button className={styles.submitBtn} onClick={handleLogin} disabled={loading}>{loading ? 'Logging in...' : 'Log in'}</button>
-                  <p className={styles.forgotLink} onClick={() => open('reset')}>Forgot password?</p>
+                <div className={styles.formGroup}>
+                  <input className={styles.formInput} type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                  <input className={styles.formInput} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleLogin()} />
+                  {error && <p className={styles.formError}>{error}</p>}
+                  <button className={styles.formSubmit} onClick={handleLogin} disabled={loading}>{loading ? '...' : 'Log in'}</button>
+                  <button className={styles.formLink} onClick={() => open('reset')}>Forgot password?</button>
                 </div>
-                <p className={styles.toggle}>No account? <span onClick={() => open('signup')}>Sign up</span></p>
+                <p className={styles.formToggle}>No account? <span onClick={() => open('signup')}>Sign up</span></p>
               </>
             )}
 
             {showAuth === 'signup' && (
               <>
                 <h2 className={styles.modalTitle}>Join Strangr</h2>
-                {message ? <p className={styles.successMsg}>{message}</p> : (
-                  <div className={styles.form}>
-                    <input className={styles.input} type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                    <input className={styles.input} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                    <input className={styles.input} type="password" placeholder="Confirm password" value={confirm} onChange={(e) => setConfirm(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSignup()} />
-                    {error && <p className={styles.errMsg}>{error}</p>}
-                    <button className={styles.submitBtn} onClick={handleSignup} disabled={loading}>{loading ? 'Creating...' : 'Create account'}</button>
+                {message ? <p className={styles.formSuccess}>{message}</p> : (
+                  <div className={styles.formGroup}>
+                    <input className={styles.formInput} type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <input className={styles.formInput} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <input className={styles.formInput} type="password" placeholder="Confirm password" value={confirm} onChange={(e) => setConfirm(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSignup()} />
+                    {error && <p className={styles.formError}>{error}</p>}
+                    <button className={styles.formSubmit} onClick={handleSignup} disabled={loading}>{loading ? '...' : 'Create account'}</button>
                   </div>
                 )}
-                <p className={styles.toggle}>Have an account? <span onClick={() => open('login')}>Log in</span></p>
+                <p className={styles.formToggle}>Have an account? <span onClick={() => open('login')}>Log in</span></p>
               </>
             )}
 
             {showAuth === 'reset' && (
               <>
                 <h2 className={styles.modalTitle}>Reset password</h2>
-                {message ? <p className={styles.successMsg}>{message}</p> : (
-                  <div className={styles.form}>
-                    <input className={styles.input} type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleReset()} />
-                    {error && <p className={styles.errMsg}>{error}</p>}
-                    <button className={styles.submitBtn} onClick={handleReset} disabled={loading}>{loading ? 'Sending...' : 'Send reset link'}</button>
+                {message ? <p className={styles.formSuccess}>{message}</p> : (
+                  <div className={styles.formGroup}>
+                    <input className={styles.formInput} type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleReset()} />
+                    {error && <p className={styles.formError}>{error}</p>}
+                    <button className={styles.formSubmit} onClick={handleReset} disabled={loading}>{loading ? '...' : 'Send reset link'}</button>
                   </div>
                 )}
-                <p className={styles.toggle}>Back to <span onClick={() => open('login')}>Log in</span></p>
+                <p className={styles.formToggle}>Back to <span onClick={() => open('login')}>log in</span></p>
               </>
             )}
           </div>
@@ -156,130 +161,147 @@ function AnonPage() {
   )
 }
 
-// ── LOGGED-IN FEED ─────────────────────────────────────────────────────────
-function FeedPage() {
+// ── LOGGED-IN FEED ──────────────────────────────────────────────────────────
+function LoggedInFeed() {
   const { user } = useAuth()
   const router   = useRouter()
-
   const [posts, setPosts]       = useState([])
   const [mySpaces, setMySpaces] = useState([])
-  const [activeTag, setActiveTag] = useState(null)
-  const [page, setPage]         = useState(0)
   const [loading, setLoading]   = useState(true)
+  const [page, setPage]         = useState(0)
   const [hasMore, setHasMore]   = useState(true)
 
   useEffect(() => {
-    loadFeed(0, activeTag, true)
-    if (user) fetchUserSpaces(user.id).then(setMySpaces)
-  }, [user, activeTag])
+    loadAll()
+  }, [user])
 
-  async function loadFeed(pageNum = 0, tag = null, reset = false) {
+  async function loadAll() {
     setLoading(true)
-    const data = await fetchFeedPosts({ page: pageNum, limit: 18, tagFilter: tag })
-    setPosts((prev) => reset ? data : [...prev, ...data])
-    setHasMore(data.length === 18)
-    setPage(pageNum)
+    const [postsData, spacesData] = await Promise.all([
+      fetchFeedPosts({ page: 0, limit: 20 }),
+      user ? fetchUserSpaces(user.id) : Promise.resolve([]),
+    ])
+    setPosts(postsData)
+    setMySpaces(spacesData)
+    setHasMore(postsData.length === 20)
     setLoading(false)
   }
 
-  function handleTag(tag) { setActiveTag(tag === activeTag ? null : tag) }
+  async function loadMore() {
+    const next = page + 1
+    const data = await fetchFeedPosts({ page: next, limit: 20 })
+    setPosts((p) => [...p, ...data])
+    setHasMore(data.length === 20)
+    setPage(next)
+  }
 
   return (
     <AppShell>
-      <div className={styles.feedPage}>
-        {/* Header */}
-        <div className={styles.feedTopBar}>
-          <div>
-            <h1 className={styles.feedTitle}>Feed</h1>
-            <p className={styles.feedSub}>Posts from across all spaces</p>
-          </div>
-          <button className={styles.newSpaceBtn} onClick={() => router.push('/spaces/create')}>
-            + New Space
-          </button>
-        </div>
-
-        {/* My spaces row */}
-        {mySpaces.length > 0 && (
-          <div className={styles.mySpacesRow}>
-            <p className={styles.mySpacesLabel}>YOUR SPACES</p>
-            <div className={styles.mySpacesScroll}>
-              {mySpaces.map((s) => (
-                <div key={s.id} className={styles.mySpaceChip} onClick={() => router.push(`/spaces/${s.slug}`)}>
-                  <div className={styles.mySpaceIcon}>
-                    {s.icon_url ? <img src={s.icon_url} alt="" className={styles.mySpaceIconImg} /> : <span>{s.name[0].toUpperCase()}</span>}
+      <div className={styles.feedLayout}>
+        {/* Main column */}
+        <div className={styles.feedMain}>
+          {/* Spaces row */}
+          <section className={styles.spacesSection}>
+            <div className={styles.sectionHeader}>
+              <h2 className={styles.sectionTitle}>Your Spaces</h2>
+              <button className={styles.viewAll} onClick={() => router.push('/spaces/create')}>View all</button>
+            </div>
+            <div className={styles.spacesGrid}>
+              {mySpaces.slice(0, 5).map((s) => (
+                <div
+                  key={s.id}
+                  className={styles.spaceCard}
+                  onClick={() => router.push(`/spaces/${s.slug}`)}
+                >
+                  <div className={styles.spaceCardIcon}>
+                    {s.icon_url ? <img src={s.icon_url} alt="" className={styles.spaceCardIconImg} /> : <span>{s.name[0].toUpperCase()}</span>}
                   </div>
-                  <span>{s.name}</span>
+                  <span className={styles.spaceCardName}>{s.name}</span>
                 </div>
               ))}
-              <div className={`${styles.mySpaceChip} ${styles.addSpaceChip}`} onClick={() => router.push('/spaces/create')}>
-                <span className={styles.addSpacePlus}>+</span><span>New</span>
+              <div className={`${styles.spaceCard} ${styles.spaceCardCreate}`} onClick={() => router.push('/spaces/create')}>
+                <div className={styles.spaceCardIconDashed}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </div>
+                <span className={styles.spaceCardName}>Create New</span>
               </div>
             </div>
-          </div>
-        )}
+          </section>
 
-        {/* Tag filters */}
-        <div className={styles.tagFilters}>
-          <button className={`${styles.tagFilter} ${!activeTag ? styles.tagFilterActive : ''}`} onClick={() => handleTag(null)}>All</button>
-          {ALL_TAGS.map((tag) => (
-            <button key={tag} className={`${styles.tagFilter} ${activeTag === tag ? styles.tagFilterActive : ''}`} onClick={() => handleTag(tag)}>
-              #{tag}
-            </button>
-          ))}
+          {/* Feed */}
+          <section className={styles.feedSection}>
+            <h2 className={styles.sectionTitle}>Main Feed</h2>
+            {loading ? (
+              <div className={styles.feedLoading}>
+                {[1,2,3].map((i) => <div key={i} className={styles.postSkeleton} />)}
+              </div>
+            ) : posts.length === 0 ? (
+              <div className={styles.feedEmpty}>
+                <p>No posts yet. Join some spaces to see content here.</p>
+                <button className={styles.emptyBtn} onClick={() => router.push('/spaces/create')}>Browse Spaces</button>
+              </div>
+            ) : (
+              <>
+                {posts.map((post) => (
+                  <PostCard key={post.id} post={post} size="medium" />
+                ))}
+                {hasMore && (
+                  <button className={styles.loadMore} onClick={loadMore}>Load more</button>
+                )}
+              </>
+            )}
+          </section>
         </div>
 
-        {/* Bento grid */}
-        {loading && posts.length === 0 ? (
-          <div className={styles.bentoGrid}>
-            {Array.from({ length: 9 }).map((_, i) => (
-              <div key={i} className={`${styles.bentoItem} ${styles[getBentoSize(i)]} ${styles.skeleton}`} />
-            ))}
+        {/* Right sidebar */}
+        <aside className={styles.feedSidebar}>
+          {/* Following */}
+          <div className={styles.sideCard}>
+            <h3 className={styles.sideCardTitle}>Following</h3>
+            <div className={styles.followingList}>
+              {mySpaces.slice(0, 3).map((s) => (
+                <div key={s.id} className={styles.followingRow} onClick={() => router.push(`/spaces/${s.slug}`)}>
+                  <div className={styles.followingAvatar}>
+                    {s.icon_url ? <img src={s.icon_url} alt="" className={styles.followingAvatarImg} /> : <span>{s.name[0]}</span>}
+                  </div>
+                  <div>
+                    <p className={styles.followingName}>{s.name}</p>
+                    <p className={styles.followingMeta}>{(s.member_count || 0).toLocaleString()} members</p>
+                  </div>
+                </div>
+              ))}
+              {mySpaces.length === 0 && (
+                <p className={styles.emptyMeta}>Join spaces to follow activity</p>
+              )}
+            </div>
           </div>
-        ) : posts.length === 0 ? (
-          <div className={styles.empty}>
-            <p>No posts yet.</p>
-            <p className={styles.emptySub}>Create a space and start posting!</p>
-            <button className={styles.createSpaceBtn2} onClick={() => router.push('/spaces/create')}>Create a Space →</button>
-          </div>
-        ) : (
-          <div className={styles.bentoGrid}>
-            {posts.map((post, i) => (
-              <div key={post.id} className={`${styles.bentoItem} ${styles[getBentoSize(i)]}`}>
-                <PostCard post={post} size={getBentoSize(i)} />
+
+          {/* Trending */}
+          <div className={styles.sideCard}>
+            <h3 className={styles.sideCardTitle}>Trending</h3>
+            {['#art', '#design', '#gaming', '#tech', '#music'].map((tag) => (
+              <div key={tag} className={styles.trendingItem}>
+                <p className={styles.trendingTag}>{tag}</p>
               </div>
             ))}
           </div>
-        )}
-
-        {hasMore && posts.length > 0 && (
-          <div className={styles.loadMoreWrap}>
-            <button className={styles.loadMoreBtn} onClick={() => loadFeed(page + 1, activeTag)} disabled={loading}>
-              {loading ? 'Loading...' : 'Load more'}
-            </button>
-          </div>
-        )}
+        </aside>
       </div>
     </AppShell>
   )
 }
 
-// ── DEFAULT EXPORT: route based on auth ───────────────────────────────────
+// ── MAIN EXPORT ─────────────────────────────────────────────────────────────
 function HomePage() {
   const { user, loading } = useAuth()
-
   if (loading) return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: '#080810' }}>
-      <div style={{ width: 28, height: 28, border: '2px solid rgba(108,99,255,0.2)', borderTopColor: '#6c63ff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+    <div style={{ display:'flex',alignItems:'center',justifyContent:'center',minHeight:'100vh',background:'#000' }}>
+      <div style={{ width:24,height:24,border:'2px solid #333',borderTopColor:'#fff',borderRadius:'50%',animation:'spin 0.7s linear infinite' }} />
     </div>
   )
-
-  return user ? <FeedPage /> : <AnonPage />
+  return user ? <LoggedInFeed /> : <AnonLanding />
 }
 
 export default function Page() {
-  return (
-    <Suspense fallback={null}>
-      <HomePage />
-    </Suspense>
-  )
+  return <Suspense fallback={null}><HomePage /></Suspense>
 }

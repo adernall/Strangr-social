@@ -173,11 +173,10 @@
 /* Bento grid */
 .bentoGrid {
   display: grid; grid-template-columns: repeat(12, 1fr);
-  grid-auto-rows: 200px; gap: 0.875rem;
+  grid-auto-rows: auto; gap: 0.875rem;
 }
 .bentoItem { min-height: 0; }
-.bentoItem > * { height: 100%; }
-.bentoItem.large { grid-column: span 8; grid-row: span 2; }
+.bentoItem.large { grid-column: span 8;  }
 .bentoItem.medium { grid-column: span 6; }
 .bentoItem.small { grid-column: span 4; }
 
@@ -202,8 +201,8 @@
 .loadMoreBtn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 @media (max-width: 900px) {
-  .bentoGrid { grid-template-columns: repeat(6, 1fr); grid-auto-rows: 180px; }
-  .bentoItem.large { grid-column: span 6; grid-row: span 2; }
+  .bentoGrid { grid-template-columns: repeat(6, 1fr); grid-auto-rows: auto; }
+  .bentoItem.large { grid-column: span 6;  }
   .bentoItem.medium { grid-column: span 6; }
   .bentoItem.small { grid-column: span 3; }
 }

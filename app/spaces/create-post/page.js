@@ -2,10 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { supabase } from '../../lib/supabase'
-import { useAuth } from '../../lib/AuthContext'
-import { fetchUserSpaces } from '../../lib/feedEngine'
-import AppShell from '../../components/AppShell'
+import { supabase } from '../../../lib/supabase'
+import { useAuth } from '../../../lib/AuthContext'
+import { fetchUserSpaces } from '../../../lib/feedEngine'
+import AppShell from '../../../components/AppShell'
 import styles from './create.module.css'
 
 export default function CreatePostPage() {

@@ -1,0 +1,157 @@
+/* app/spaces/spaces.module.css */
+.page { max-width: 1100px; margin: 0 auto; padding: 2.5rem 2rem 5rem; font-family: 'Inter', sans-serif; color: #e2e2e2; }
+
+/* Header */
+.header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 2rem; gap: 1rem; flex-wrap: wrap; }
+.title { font-family: 'Space Grotesk', sans-serif; font-size: 2rem; font-weight: 800; color: #fff; letter-spacing: -0.03em; }
+.sub { font-size: 14px; color: #6b6b6b; margin-top: 0.25rem; max-width: 400px; }
+.headerActions { display: flex; gap: 0.625rem; align-items: center; }
+
+.viewBtn {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+  color: #6b6b6b; background: #111; border: 1px solid #222;
+  padding: 0.6rem 1.25rem; border-radius: 999px; cursor: pointer;
+  font-family: inherit; transition: all 0.15s;
+}
+.viewBtn:hover { border-color: #444; color: #e2e2e2; }
+.viewBtnActive { color: #fff; background: #1a1a1a; border-color: #333; }
+
+.createBtn {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+  color: #000; background: #fff;
+  padding: 0.6rem 1.25rem; border-radius: 999px; border: none;
+  cursor: pointer; font-family: inherit; transition: all 0.15s;
+}
+.createBtn:hover { background: #e2e2e2; }
+
+/* Search + filters */
+.filterRow { margin-bottom: 1rem; }
+.searchBox {
+  display: flex; align-items: center; gap: 0.75rem;
+  background: #0a0a0a; border: 1px solid #1c1c1c;
+  border-radius: 12px; padding: 0.75rem 1rem;
+  max-width: 360px; transition: border-color 0.15s; color: #6b6b6b;
+}
+.searchBox:focus-within { border-color: #333; }
+.searchInput { background: none; border: none; color: #e2e2e2; font-size: 14px; font-family: inherit; outline: none; flex: 1; }
+.searchInput::placeholder { color: #4b4b4b; }
+
+.categories { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.25rem; margin-bottom: 2rem; scrollbar-width: none; }
+.categories::-webkit-scrollbar { display: none; }
+.catBtn {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+  color: #6b6b6b; background: #0a0a0a; border: 1px solid #1c1c1c;
+  padding: 0.5rem 1rem; border-radius: 999px; cursor: pointer; font-family: inherit;
+  white-space: nowrap; transition: all 0.15s; flex-shrink: 0;
+}
+.catBtn:hover { color: #e2e2e2; border-color: #333; }
+.catActive { color: #fff; background: #fff; color: #000; border-color: #fff; }
+
+/* Hero grid */
+.heroGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2.5rem; }
+
+.featuredCard {
+  background: #0a0a0a; border: 1px solid #1c1c1c;
+  border-radius: 20px; overflow: hidden; cursor: pointer;
+  min-height: 360px; display: flex; align-items: flex-end;
+  position: relative; transition: border-color 0.2s;
+}
+.featuredCard:hover { border-color: #333; }
+
+.featuredOverlay {
+  background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+  padding: 2rem; width: 100%; display: flex; flex-direction: column; gap: 0.5rem;
+}
+
+.featuredBadge {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.5); display: inline-block;
+}
+
+.featuredName {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.75rem; font-weight: 800; color: #fff;
+  letter-spacing: -0.03em; line-height: 1.1;
+}
+
+.featuredDesc { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.5; }
+
+.joinSpaceBtn {
+  background: #fff; color: #000;
+  font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.08em;
+  padding: 0.65rem 1.5rem; border-radius: 999px; border: none;
+  cursor: pointer; width: fit-content; margin-top: 0.5rem; transition: all 0.15s;
+}
+.joinSpaceBtn:hover { background: #e2e2e2; }
+
+.sideCards { display: flex; flex-direction: column; gap: 1rem; }
+
+.sideCard {
+  background: #0a0a0a; border: 1px solid #1c1c1c;
+  border-radius: 16px; padding: 1.25rem;
+  cursor: pointer; transition: border-color 0.2s;
+  display: flex; flex-direction: column; gap: 0.5rem; flex: 1;
+}
+.sideCard:hover { border-color: #333; }
+
+.sideCardTop { display: flex; align-items: center; justify-content: space-between; }
+.sideCardIcon { width: 36px; height: 36px; border-radius: 10px; background: #1a1a1a; border: 1px solid #222; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #e2e2e2; overflow: hidden; }
+.sideCardIconImg { width: 100%; height: 100%; object-fit: cover; }
+.sideCardPublic { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: #6b6b6b; }
+.sideCardName { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 700; color: #fff; }
+.sideCardDesc { font-size: 13px; color: #6b6b6b; line-height: 1.5; flex: 1; }
+.sideCardFooter { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
+.sideCardMembers { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: #6b6b6b; }
+.viewBtn2 { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: #e2e2e2; background: none; border: none; cursor: pointer; font-family: inherit; transition: color 0.15s; }
+.viewBtn2:hover { color: #fff; }
+
+/* Recent activity */
+.allSpacesList { }
+.sectionTitle { font-family: 'Space Grotesk', sans-serif; font-size: 1.125rem; font-weight: 700; color: #fff; margin-bottom: 1rem; }
+
+.activityRow {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem; border-radius: 14px; background: #0a0a0a; border: 1px solid #1c1c1c;
+  cursor: pointer; transition: border-color 0.15s; margin-bottom: 0.5rem;
+}
+.activityRow:hover { border-color: #333; }
+.activityIcon { width: 48px; height: 48px; border-radius: 14px; background: #1a1a1a; border: 1px solid #222; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 700; color: #e2e2e2; overflow: hidden; flex-shrink: 0; }
+.activityIconImg { width: 100%; height: 100%; object-fit: cover; }
+.activityInfo { flex: 1; }
+.activityName { font-size: 14px; font-weight: 700; color: #fff; }
+.activityMeta { font-size: 12px; color: #6b6b6b; margin-top: 1px; }
+
+.joinSmallBtn {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+  color: #e2e2e2; background: #111; border: 1px solid #333;
+  padding: 0.5rem 1rem; border-radius: 999px; cursor: pointer;
+  font-family: inherit; transition: all 0.15s; flex-shrink: 0;
+}
+.joinSmallBtn:hover { border-color: #fff; color: #fff; }
+
+/* My spaces grid */
+.mySpacesGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+.spaceCard {
+  background: #0a0a0a; border: 1px solid #1c1c1c; border-radius: 16px;
+  padding: 1.25rem; display: flex; align-items: center; gap: 0.875rem;
+  cursor: pointer; transition: border-color 0.15s;
+}
+.spaceCard:hover { border-color: #333; }
+.spaceCardIcon { width: 42px; height: 42px; border-radius: 12px; background: #1a1a1a; border: 1px solid #222; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; color: #e2e2e2; overflow: hidden; flex-shrink: 0; }
+.spaceCardIconImg { width: 100%; height: 100%; object-fit: cover; }
+.spaceCardName { font-size: 13px; font-weight: 700; color: #fff; }
+.spaceCardMeta { font-size: 11px; color: #6b6b6b; margin-top: 1px; }
+
+/* Loading */
+.loading { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.skeleton { height: 200px; background: #0a0a0a; border: 1px solid #1c1c1c; border-radius: 16px; animation: shimmer 1.5s ease-in-out infinite; }
+@keyframes shimmer { 0%,100%{opacity:0.4} 50%{opacity:0.8} }
+
+.empty { text-align: center; padding: 4rem; color: #6b6b6b; font-size: 14px; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+.joinBtn { background: #fff; color: #000; font-weight: 700; font-size: 13px; padding: 0.65rem 1.5rem; border-radius: 999px; border: none; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+.joinBtn:hover { background: #e2e2e2; }
+
+@media (max-width: 768px) {
+  .heroGrid { grid-template-columns: 1fr; }
+  .sideCards { flex-direction: row; overflow-x: auto; }
+}

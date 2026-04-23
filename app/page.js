@@ -40,7 +40,14 @@ function AnonLanding() {
     setLoading(false)
     if (err) return setError(err.message)
     const { data: p } = await supabase.from('profiles').select('id').eq('id', data.user.id).maybeSingle()
-    router.push(p ? '/' : '/setup-profile')
+    setShowAuth(null)
+    reset()
+    if (!p) {
+      router.push('/setup-profile')
+    } else {
+      // Already on '/', must refresh to re-render with auth state
+      router.refresh()
+    }
   }
 
   async function handleSignup() {
